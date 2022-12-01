@@ -1,7 +1,7 @@
-package com.github.courtandrey.simpledatascraperbot.scraper.core;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core;
 
 import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
-import com.github.courtandrey.simpledatascraperbot.scraper.parser.HabrCareerParser;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.parser.HabrCareerParser;
 
 import java.util.List;
 

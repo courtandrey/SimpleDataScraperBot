@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.repository;
+package com.github.courtandrey.simpledatascraperbot.data.repository;
 
 import com.github.courtandrey.simpledatascraperbot.data.Data;
 import com.github.courtandrey.simpledatascraperbot.data.Vacancy;

@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.repository;
+package com.github.courtandrey.simpledatascraperbot.data.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;

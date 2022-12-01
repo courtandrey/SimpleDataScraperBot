@@ -1,8 +1,7 @@
-package com.github.courtandrey.simpledatascraperbot.scraper.core;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core;
 
 import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
-import com.github.courtandrey.simpledatascraperbot.scraper.parser.HHParser;
-import org.springframework.stereotype.Component;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.parser.HHParser;
 
 import java.util.List;
 

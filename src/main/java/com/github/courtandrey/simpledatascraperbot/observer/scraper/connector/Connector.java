@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.scraper.connector;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.connector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,8 +24,9 @@ public class Connector {
                     .connect(urlWithPage)
                     .get();
             logger.info("Fetched " + urlWithPage);
-        } catch (IOException e) {
-            logger.error("Connection issues: " + e.getMessage() + " " + String.format(url, pageNum));
+            Thread.sleep(1000);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Connection issues: " + e + " " + String.format(url, pageNum));
         }
         return document;
     }

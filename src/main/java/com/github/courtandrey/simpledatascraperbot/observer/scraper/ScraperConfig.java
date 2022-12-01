@@ -1,9 +1,9 @@
-package com.github.courtandrey.simpledatascraperbot.scraper;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper;
 
 import com.github.courtandrey.simpledatascraperbot.data.Data;
-import com.github.courtandrey.simpledatascraperbot.scraper.core.HHScraper;
-import com.github.courtandrey.simpledatascraperbot.scraper.core.HabrCareerScraper;
-import com.github.courtandrey.simpledatascraperbot.scraper.core.Scraper;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.Scraper;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.HHScraper;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.HabrCareerScraper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

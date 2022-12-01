@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.scraper.core;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core;
 
 import com.github.courtandrey.simpledatascraperbot.data.Data;
 

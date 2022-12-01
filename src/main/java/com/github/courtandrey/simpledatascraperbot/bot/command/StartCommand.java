@@ -1,25 +1,20 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
-import com.github.courtandrey.simpledatascraperbot.data.Data;
+import com.github.courtandrey.simpledatascraperbot.configuration.User;
 import com.github.courtandrey.simpledatascraperbot.observer.DataObserver;
+import com.github.courtandrey.simpledatascraperbot.process.CycledProcess;
+import com.github.courtandrey.simpledatascraperbot.data.repository.UserRepository;
+import com.github.courtandrey.simpledatascraperbot.process.strategy.SendNewVacanciesStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.locks.ReentrantLock;
-
-@Component
 public class StartCommand extends BaseCommand {
     @Autowired
     private DataObserver observer;
+    @Autowired
+    private UserRepository repository;
     public StartCommand() {
         super("start", "initializes bot");
     }
@@ -27,21 +22,15 @@ public class StartCommand extends BaseCommand {
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         logger.info("inited");
-        while (true) {
-            try {
-                Collection<Data> data = observer.observe();
-                for (Data d : data) {
-                    logger.info(d.toString());
-                    SendMessage dataMessage = new SendMessage();
-                    dataMessage.setText(d.toString());
-                    dataMessage.setChatId(message.getChatId());
-                    absSender.execute(dataMessage);
-                }
-                logger.info("Finished circle.");
-                Thread.sleep(1000 * 60);
-            } catch (IOException | TelegramApiException | InterruptedException e) {
-                logger.error(e.getLocalizedMessage());
+        try {
+            if (repository.findByUserId(message.getFrom().getId()).isEmpty()) {
+                repository.save(new User(message.getFrom()));
             }
-        }
+        } catch (TelegramApiException e) {logger.error("Couldn't save user");}
+        CycledProcess process =
+                manager.cycledProcess(1000*60,
+                        message.getChatId(),
+                        new SendNewVacanciesStrategy(observer, message, absSender));
+        (new Thread(process)).start();
     }
 }

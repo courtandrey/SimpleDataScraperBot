@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.scraper.parser;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.parser;
 
 import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
 import org.jsoup.nodes.Document;
