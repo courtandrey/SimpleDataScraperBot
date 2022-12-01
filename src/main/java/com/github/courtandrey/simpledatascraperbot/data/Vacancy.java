@@ -1,54 +1,39 @@
 package com.github.courtandrey.simpledatascraperbot.data;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
+
 import java.util.Objects;
 
-@SuppressWarnings("unused")
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Entity
 public class Vacancy implements Data {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, unique = true, length = 1024)
     private String url;
     private String salary;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
-    }
-
-    @Override
-    public String toString() {
-        return  "name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", salary='" + salary + '\'';
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Vacancy vacancy = (Vacancy) o;
-        return Objects.equals(name, vacancy.name) && Objects.equals(url, vacancy.url) && Objects.equals(salary, vacancy.salary);
+        return id != null && Objects.equals(id, vacancy.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, url, salary);
+        return getClass().hashCode();
     }
 }

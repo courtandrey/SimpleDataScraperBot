@@ -14,6 +14,7 @@ public abstract class VacancyScraper implements Scraper<Vacancy> {
     protected String[] urls;
     protected int startPageNum;
 
+
     public abstract List<Vacancy> scrap();
 
     protected List<Vacancy> iterateUrls() {
@@ -26,12 +27,13 @@ public abstract class VacancyScraper implements Scraper<Vacancy> {
     }
 
     protected List<Vacancy> iteratePages() {
+        int pageNum = startPageNum;
         List<Vacancy> vacancies = new ArrayList<>();
         List<Vacancy> newVacancies;
         do {
-            newVacancies = scrapPage(startPageNum);
+            newVacancies = scrapPage(pageNum);
             if (newVacancies == null) break;
-            ++startPageNum;
+            ++pageNum;
         } while (vacancies.addAll(newVacancies));
         return vacancies;
     }
@@ -42,4 +44,8 @@ public abstract class VacancyScraper implements Scraper<Vacancy> {
         return parser.parse(hhDocument);
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().toString();
+    }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface Scraper<T extends Data> {
     List<T> scrap();
+    String toString();
 }
