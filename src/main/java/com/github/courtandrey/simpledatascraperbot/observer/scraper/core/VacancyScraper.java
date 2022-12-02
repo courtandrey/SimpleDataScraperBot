@@ -1,9 +1,10 @@
 package com.github.courtandrey.simpledatascraperbot.observer.scraper.core;
 
-import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
-import com.github.courtandrey.simpledatascraperbot.observer.scraper.connector.Connector;
-import com.github.courtandrey.simpledatascraperbot.observer.scraper.parser.VacancyParser;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.VacancyParser;
+import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connector.Connector;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +12,8 @@ import java.util.List;
 public abstract class VacancyScraper implements Scraper<Vacancy> {
     protected Connector connector;
     protected VacancyParser parser;
-    protected String[] urls;
+    protected List<String> urls = new ArrayList<>();
     protected int startPageNum;
-
-
-    public abstract List<Vacancy> scrap();
 
     protected List<Vacancy> iterateUrls() {
         List<Vacancy> vacancies = new ArrayList<>();
@@ -46,6 +44,7 @@ public abstract class VacancyScraper implements Scraper<Vacancy> {
 
     @Override
     public String toString() {
-        return this.getClass().toString();
+        return this.getClass().getSimpleName();
     }
+
 }

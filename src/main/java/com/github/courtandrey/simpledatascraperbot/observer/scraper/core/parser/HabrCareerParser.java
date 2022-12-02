@@ -1,6 +1,6 @@
-package com.github.courtandrey.simpledatascraperbot.observer.scraper.parser;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser;
 
-import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -8,17 +8,17 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HHParser extends VacancyParser{
+public class HabrCareerParser extends VacancyParser {
     @Override
     public List<Vacancy> parse(Document document) {
-        Elements vacancies = document.getElementsByClass("serp-item");
+        Elements vacancies = document.getElementsByClass("vacancy-card");
         List<Vacancy> vcs = new ArrayList<>();
         for (Element vacancy:vacancies) {
             Vacancy vc = new Vacancy();
-            Elements names = vacancy.getElementsByClass("serp-item__title");
+            Elements names = vacancy.getElementsByClass("vacancy-card__title-link");
             vc.setName(names.size() > 0 ? names.get(0).text() : null);
-            vc.setUrl(names.size() > 0 ? names.get(0).attr("href") : null);
-            Elements salaries = vacancy.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-compensation");
+            vc.setUrl(names.size() > 0 ? "https://career.habr.com" + names.get(0).attr("href") : null);
+            Elements salaries = vacancy.getElementsByClass("basic-salary");
             vc.setSalary(salaries.size() > 0 ? salaries.get(0).text() : null);
             vcs.add(vc);
         }

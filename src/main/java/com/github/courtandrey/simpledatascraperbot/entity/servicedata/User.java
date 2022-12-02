@@ -1,19 +1,23 @@
-package com.github.courtandrey.simpledatascraperbot.configuration;
+package com.github.courtandrey.simpledatascraperbot.entity.servicedata;
 
+import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import jakarta.persistence.*;
-import org.telegram.telegrambots.meta.api.objects.Contact;
-import org.telegram.telegrambots.meta.bots.AbsSender;
+import lombok.Getter;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Set;
+
 @Entity
+@Getter
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
     @Column(nullable = false, unique = true)
     private Long userId;
     private String firstName;
     private String lastName;
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    private Set<Request> requests;
 
     public User() {
     }

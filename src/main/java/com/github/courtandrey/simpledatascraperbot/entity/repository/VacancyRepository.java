@@ -1,6 +1,6 @@
-package com.github.courtandrey.simpledatascraperbot.data.repository;
+package com.github.courtandrey.simpledatascraperbot.entity.repository;
 
-import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

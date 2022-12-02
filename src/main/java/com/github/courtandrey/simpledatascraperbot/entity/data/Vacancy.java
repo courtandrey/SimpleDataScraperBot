@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.data;
+package com.github.courtandrey.simpledatascraperbot.entity.data;
 
 import jakarta.persistence.*;
 import lombok.Getter;

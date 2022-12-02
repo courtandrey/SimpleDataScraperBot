@@ -1,6 +1,6 @@
-package com.github.courtandrey.simpledatascraperbot.observer.scraper.parser;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser;
 
-import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import org.jsoup.nodes.Document;
 
 import java.util.List;

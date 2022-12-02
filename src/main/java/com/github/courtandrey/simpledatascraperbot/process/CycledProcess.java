@@ -12,10 +12,9 @@ public class CycledProcess extends Process {
 
     @Override
     public void run() {
-        while (true) {
+        while (!this.isKilled()) {
             try {
                 strategy.execute();
-                if (this.isKilled()) break;
                 Thread.sleep(waitTime);
             } catch (InterruptedException e) {
                 break;

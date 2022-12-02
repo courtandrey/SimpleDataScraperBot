@@ -1,7 +1,7 @@
-package com.github.courtandrey.simpledatascraperbot.data.repository;
+package com.github.courtandrey.simpledatascraperbot.entity.repository;
 
-import com.github.courtandrey.simpledatascraperbot.data.Data;
-import com.github.courtandrey.simpledatascraperbot.data.Vacancy;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

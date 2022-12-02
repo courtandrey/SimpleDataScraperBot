@@ -1,4 +1,4 @@
-package com.github.courtandrey.simpledatascraperbot.observer.scraper.connector;
+package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -1,6 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.observer.scraper;
 
-import com.github.courtandrey.simpledatascraperbot.data.Data;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.Scraper;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.HHScraper;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.HabrCareerScraper;

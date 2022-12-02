@@ -1,11 +1,12 @@
 package com.github.courtandrey.simpledatascraperbot.process.strategy;
 
-import com.github.courtandrey.simpledatascraperbot.data.Data;
-import com.github.courtandrey.simpledatascraperbot.observer.DataObserver;
+import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
+import com.github.courtandrey.simpledatascraperbot.observer.DataRequestManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -14,11 +15,10 @@ import java.util.Collection;
 
 public class SendNewVacanciesStrategy implements Strategy {
     private static final Logger logger = LoggerFactory.getLogger(SendNewVacanciesStrategy.class);
-    private final DataObserver observer;
+    private final DataRequestManager observer;
     private final Message message;
     private final AbsSender absSender;
-
-    public SendNewVacanciesStrategy(DataObserver observer, Message message, AbsSender absSender) {
+    public SendNewVacanciesStrategy(DataRequestManager observer, Message message, AbsSender absSender) {
         this.observer = observer;
         this.message = message;
         this.absSender = absSender;
@@ -27,7 +27,7 @@ public class SendNewVacanciesStrategy implements Strategy {
     @Override
     public void execute() {
             try {
-                Collection<Data> data = observer.observe();
+                Collection<Data> data = observer.observe(message.getFrom().getId());
                 for (Data d : data) {
                     logger.info(d.toString());
                     SendMessage dataMessage = new SendMessage();

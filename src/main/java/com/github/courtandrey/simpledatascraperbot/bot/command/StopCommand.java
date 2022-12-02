@@ -1,6 +1,8 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
 import com.github.courtandrey.simpledatascraperbot.process.Process;
+import com.github.courtandrey.simpledatascraperbot.process.ProcessManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
