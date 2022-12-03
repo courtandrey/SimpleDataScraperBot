@@ -21,7 +21,11 @@ public class StartCommand extends BaseCommand {
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         try {
-            repository.save(new User(message.getFrom()));
+            User newUser = new User(message.getFrom());
+            User oldUser = repository.findByUserId(message.getChatId()).orElse(new User());
+            if (!oldUser.getUserId().equals(newUser.getUserId())) {
+                repository.save(newUser);
+            }
         } catch (TelegramApiException e) {logger.error("Couldn't save user");}
 
 

@@ -1,5 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.entity.request;
 
+import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,18 @@ public abstract class Request {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public abstract String toString();

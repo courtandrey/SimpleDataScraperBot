@@ -189,6 +189,11 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             if (dialogChain.get(100).getText().equals("y")) {
                 request.setRemote(true);
             }
+
+            request.setUser(userRepository.findByUserId(dialogChain.get(0).getChatId()).orElseThrow(
+                    UserNotFoundException::new
+            ));
+
             return request;
         }
 
@@ -206,6 +211,9 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             if (dialogChain.get(100).getText().equals("y")) {
                 request.setRemote(true);
             }
+            request.setUser(userRepository.findByUserId(dialogChain.get(0).getChatId()).orElseThrow(
+                    UserNotFoundException::new
+            ));
             return request;
         }
 

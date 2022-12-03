@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,8 +19,9 @@ public class User {
     private String lastName;
     private String username;
     @OneToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    private Set<Request> requests;
+            cascade = CascadeType.ALL,
+            orphanRemoval = true, mappedBy = "user")
+    private Set<Request> requests = new HashSet<>();
 
     public User() {
     }
@@ -30,4 +33,16 @@ public class User {
         this.username=user.getUserName();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, firstName, lastName, username);
+    }
 }

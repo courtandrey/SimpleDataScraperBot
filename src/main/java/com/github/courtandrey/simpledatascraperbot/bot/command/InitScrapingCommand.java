@@ -5,6 +5,7 @@ import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
 import com.github.courtandrey.simpledatascraperbot.observer.DataManager;
 import com.github.courtandrey.simpledatascraperbot.process.CycledProcess;
+import com.github.courtandrey.simpledatascraperbot.process.Process;
 import com.github.courtandrey.simpledatascraperbot.process.strategy.SendNewDataStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,11 +13,13 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.List;
+
 public class InitScrapingCommand extends BaseCommand{
     @Autowired
     private DataManager observer;
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     public InitScrapingCommand() {
         super("init", "init scraping");
@@ -24,7 +27,7 @@ public class InitScrapingCommand extends BaseCommand{
 
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
-        User user = repository.findByUserId(message.getFrom().getId()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByUserId(message.getFrom().getId()).orElseThrow(UserNotFoundException::new);
         if (user.getRequests().size() == 0) {
             try {
                 absSender.execute(new SendMessage(
@@ -35,6 +38,24 @@ public class InitScrapingCommand extends BaseCommand{
                 logger.info("Exception occurred: " + e);
             }
             return;
+        }
+
+        List<Process> processList = processManager.getProcesses();
+
+        for (Process process:processList) {
+            if (process.getChatId().equals(user.getUserId())) {
+                if (process.getStrategy() instanceof SendNewDataStrategy) {
+                    try {
+                        absSender.execute(new SendMessage(
+                                String.valueOf(message.getChatId()),
+                                "Scraping already executes"
+                        ));
+                    } catch (TelegramApiException e) {
+                        logger.info("Exception occurred: " + e);
+                    }
+                    return;
+                }
+            }
         }
 
         try {
@@ -49,7 +70,7 @@ public class InitScrapingCommand extends BaseCommand{
         }
 
         CycledProcess process =
-                manager.cycledProcess(
+                processManager.cycledProcess(
                         1000*60,
                         message.getChatId(),
                         new SendNewDataStrategy(observer, message, absSender));

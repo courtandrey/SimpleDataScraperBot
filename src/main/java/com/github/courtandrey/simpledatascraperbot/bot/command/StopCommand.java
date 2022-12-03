@@ -1,8 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
 import com.github.courtandrey.simpledatascraperbot.process.Process;
-import com.github.courtandrey.simpledatascraperbot.process.ProcessManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -25,8 +23,9 @@ public class StopCommand extends BaseCommand{
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-        for (Process process:manager.getProcesses()) {
+        for (Process process: processManager.getProcesses()) {
             if (process.getChatId().equals(message.getChatId())) {
+                processManager.getProcesses().remove(process);
                 process.kill();
             }
         }

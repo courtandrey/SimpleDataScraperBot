@@ -16,7 +16,7 @@ public class DeleteRequestCommand extends BaseCommand{
         try {
             absSender.execute(new SendMessage(
                     String.valueOf(message.getChatId()),
-                    "Type id of request you'd like to remove. If you don't id of that request use /show command"
+                    "Type id of request you'd like to remove. If you don't know id of that request use /show command"
             ));
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);

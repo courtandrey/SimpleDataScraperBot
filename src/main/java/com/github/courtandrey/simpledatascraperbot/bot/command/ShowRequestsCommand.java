@@ -45,7 +45,7 @@ public class ShowRequestsCommand extends BaseCommand{
                         .append(r);
             }
 
-            showRequestsTextBuilder.append("\nTo delete one of requests use command /delete and than send ID " +
+            showRequestsTextBuilder.append("\nTo delete one of requests use command /delete and then send ID " +
                     "of request you want to be removed");
 
             try {

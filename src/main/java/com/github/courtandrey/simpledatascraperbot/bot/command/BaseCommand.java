@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public abstract class BaseCommand implements IBotCommand {
     @Autowired
-    protected ProcessManager manager;
+    protected ProcessManager processManager;
     protected static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
     final String identifier;
     final String description;
