@@ -25,18 +25,18 @@ public class SendNewDataStrategy implements Strategy {
 
     @Override
     public void execute() {
-            try {
-                Collection<Data> data = observer.getNewDataMatchingRequest(message.getFrom().getId());
-                for (Data d : data) {
-                    logger.info(d.toString());
-                    SendMessage dataMessage = new SendMessage();
-                    dataMessage.setText(d.toString());
-                    dataMessage.setChatId(message.getChatId());
-                    absSender.execute(dataMessage);
-                }
-                logger.info("Finished circle.");
-            } catch (IOException | TelegramApiException e) {
-                logger.error(e.getLocalizedMessage());
+        try {
+            Collection<Data> data = observer.getNewDataMatchingRequest(message.getFrom().getId());
+            for (Data d : data) {
+                logger.info(d.toString());
+                SendMessage dataMessage = new SendMessage();
+                dataMessage.setText(d.toString());
+                dataMessage.setChatId(message.getChatId());
+                absSender.execute(dataMessage);
             }
+            logger.info("Finished circle.");
+        } catch (IOException | TelegramApiException e) {
+            logger.error(e.getLocalizedMessage());
+        }
     }
 }

@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-@Service
-@Scope(scopeName = "prototype")
 public class DataManager {
     @Autowired
     private RepositoryFactory repositoryFactory;

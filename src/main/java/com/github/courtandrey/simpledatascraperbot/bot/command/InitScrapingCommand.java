@@ -1,5 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
+import com.github.courtandrey.simpledatascraperbot.configuration.Configuration;
 import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
@@ -14,12 +15,13 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Map;
 
 public class InitScrapingCommand extends BaseCommand{
     @Autowired
-    private DataManager observer;
-    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private Configuration configuration;
 
     public InitScrapingCommand() {
         super("init", "init scraping");
@@ -35,28 +37,30 @@ public class InitScrapingCommand extends BaseCommand{
                         "You should add request using /add command"
                 ));
             } catch (TelegramApiException e) {
-                logger.info("Exception occurred: " + e);
+                logger.error("Exception occurred: " + e);
             }
             return;
         }
 
-        List<Process> processList = processManager.getProcesses();
-
-        for (Process process:processList) {
-            if (process.getChatId().equals(user.getUserId())) {
-                if (process.getStrategy() instanceof SendNewDataStrategy) {
-                    try {
-                        absSender.execute(new SendMessage(
-                                String.valueOf(message.getChatId()),
-                                "Scraping already executes"
-                        ));
-                    } catch (TelegramApiException e) {
-                        logger.info("Exception occurred: " + e);
-                    }
-                    return;
-                }
+        DataManager observer = configuration.manager();
+        if (processManager.checkIfProcessExists(message.getChatId(),
+                new SendNewDataStrategy(observer, message, absSender))) {
+            try {
+                absSender.execute(new SendMessage(
+                        String.valueOf(message.getChatId()),
+                        "Process already executes. If you made /stop command, wait till the end of loop"
+                ));
+            } catch (TelegramApiException e) {
+                logger.error("Exception occurred: " + e);
             }
+            return;
         }
+
+        CycledProcess process =
+                processManager.cycledProcess(
+                        1000*60,
+                        message.getChatId(),
+                        new SendNewDataStrategy(observer, message, absSender));
 
         try {
             absSender.execute(new SendMessage(
@@ -66,14 +70,10 @@ public class InitScrapingCommand extends BaseCommand{
                             "/stop command"
             ));
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            logger.error(e.getLocalizedMessage());
+            return;
         }
 
-        CycledProcess process =
-                processManager.cycledProcess(
-                        1000*60,
-                        message.getChatId(),
-                        new SendNewDataStrategy(observer, message, absSender));
-        (new Thread(process, "CycledProcess " + message.getChatId())).start();
+       process.start();
     }
 }

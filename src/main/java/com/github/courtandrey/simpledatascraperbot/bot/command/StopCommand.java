@@ -6,6 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StopCommand extends BaseCommand{
 
     public StopCommand() {
@@ -23,11 +26,11 @@ public class StopCommand extends BaseCommand{
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-        for (Process process: processManager.getProcesses()) {
-            if (process.getChatId().equals(message.getChatId())) {
-                processManager.getProcesses().remove(process);
-                process.kill();
-            }
+
+        List<Process> processList = processManager.getProcesses().get(message.getChatId());
+
+        for (Process process:processList) {
+            process.kill();
         }
     }
 }
