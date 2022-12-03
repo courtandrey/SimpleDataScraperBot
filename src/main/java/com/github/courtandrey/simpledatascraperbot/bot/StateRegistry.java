@@ -37,7 +37,7 @@ public class StateRegistry {
                 commands.get(chatId).add(new State(
                         message,
                         previousState.dialog.nextStep != null ?
-                                new Dialog(previousState.dialog.getNextStep(), DialogType.ADD_REQUEST) :
+                                new Dialog(previousState.dialog.getNextStep(), previousState.dialog.type) :
                                 previousState.dialog
                 ));
             }
