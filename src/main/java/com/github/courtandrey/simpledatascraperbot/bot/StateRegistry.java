@@ -32,6 +32,7 @@ public class StateRegistry {
     public void register(Message message, Long chatId) {
         if (commands.get(chatId) != null) {
             State previousState = commands.get(chatId).getLast();
+
             if (previousState.dialog != null && !message.isCommand()) {
                 commands.get(chatId).add(new State(
                         message,
@@ -39,7 +40,9 @@ public class StateRegistry {
                                 new Dialog(previousState.dialog.getNextStep(), DialogType.ADD_REQUEST) :
                                 previousState.dialog
                 ));
-            } else {
+            }
+
+            else {
                 commands.get(chatId).add(new State(
                         message,
                         message.getText().equals("/add") ? new Dialog(0, DialogType.ADD_REQUEST) : null
