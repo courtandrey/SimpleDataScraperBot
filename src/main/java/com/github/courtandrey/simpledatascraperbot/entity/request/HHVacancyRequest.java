@@ -22,10 +22,15 @@ public class HHVacancyRequest extends VacancyRequest {
 
     @Column(
             nullable = false,
+            updatable = false,
             length = 64
     )
     private String searchText;
     @Enumerated(EnumType.STRING)
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private Experience experience;
 
     @Override

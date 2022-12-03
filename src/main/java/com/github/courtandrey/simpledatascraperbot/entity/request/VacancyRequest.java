@@ -9,5 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class VacancyRequest extends Request{
+    @Column(nullable = false,
+            updatable = false)
     private boolean isRemote = false;
 }

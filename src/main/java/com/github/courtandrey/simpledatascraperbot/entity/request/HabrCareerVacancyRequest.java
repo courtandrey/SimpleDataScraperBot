@@ -21,9 +21,9 @@ public class HabrCareerVacancyRequest extends VacancyRequest {
         LEAD
     }
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer skill;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private Level level;
 
