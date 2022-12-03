@@ -90,6 +90,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                     dialog.setNextStep(20);
                 }
             }
+
             case 10 -> {
                 if (update.getMessage().getText().length() < 2) {
                     this.execute(new SendMessage(
@@ -108,6 +109,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                     dialog.setNextStep(11);
                 }
             }
+
             case 11 -> {
                 if (!update.getMessage().getText().equals("1") &&
                         !update.getMessage().getText().equals("2") &&
@@ -123,6 +125,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                     dialog.setNextStep(Integer.MAX_VALUE);
                 }
             }
+
             case 20 -> {
                 try {
                     Integer.parseInt(update.getMessage().getText());
@@ -143,6 +146,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                             "This is not a number"));
                 }
             }
+
             case 21 -> {
                 try {
                     int num = Integer.parseInt(update.getMessage().getText());
@@ -158,6 +162,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                             "This is not a number"));
                 }
             }
+
             case Integer.MAX_VALUE -> {
                 if (!update.getMessage().getText().equals("y") && !update.getMessage().getText().equals("n")) {
                     this.execute(new SendMessage(

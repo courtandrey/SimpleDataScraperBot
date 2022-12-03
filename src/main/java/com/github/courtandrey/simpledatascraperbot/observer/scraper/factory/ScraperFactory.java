@@ -28,15 +28,15 @@ public class ScraperFactory {
     }
 
     public List<Data> scrap(Set<Request> urls) {
-        List<Data> vacancies = new ArrayList<>();
+        List<Data> data = new ArrayList<>();
         scrapers.forEach(x -> {
             List<String> searchStrings = urls
                     .stream().filter(x::rightScraperToRequest)
                     .map(creator::getURL)
                     .toList();
-            vacancies.addAll(x.scrap(searchStrings));
+            data.addAll(x.scrap(searchStrings));
             logger.info(x + " scraped.");
         });
-        return vacancies;
+        return data;
     }
 }

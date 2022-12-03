@@ -19,7 +19,7 @@ public class StateRegistry {
     @RequiredArgsConstructor
     static class Dialog{
         private final int step;
-        private int nextStep = 0;
+        private Integer nextStep = null;
         private final DialogType type;
     }
 
@@ -35,7 +35,9 @@ public class StateRegistry {
             if (previousState.dialog != null && !message.isCommand()) {
                 commands.get(chatId).add(new State(
                         message,
-                        new Dialog(previousState.dialog.getNextStep(), DialogType.ADD_REQUEST)
+                        previousState.dialog.nextStep != null ?
+                                new Dialog(previousState.dialog.getNextStep(), DialogType.ADD_REQUEST) :
+                                previousState.dialog
                 ));
             } else {
                 commands.get(chatId).add(new State(
@@ -43,7 +45,9 @@ public class StateRegistry {
                         message.getText().equals("/add") ? new Dialog(0, DialogType.ADD_REQUEST) : null
                 ));
             }
-        } else {
+        }
+
+        else {
             LinkedList<State> states = new LinkedList<>();
             states.add(new State(
                     message,
