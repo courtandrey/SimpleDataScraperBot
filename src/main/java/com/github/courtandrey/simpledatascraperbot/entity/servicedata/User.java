@@ -15,6 +15,7 @@ public class User {
     private Long userId;
     private String firstName;
     private String lastName;
+    private String username;
     @OneToMany(fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
     private Set<Request> requests;
@@ -26,6 +27,7 @@ public class User {
         this.firstName=user.getFirstName();
         this.lastName=user.getLastName();
         this.userId=user.getId();
+        this.username=user.getUserName();
     }
 
 }

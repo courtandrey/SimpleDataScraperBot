@@ -12,4 +12,9 @@ public abstract class VacancyRequest extends Request{
     @Column(nullable = false,
             updatable = false)
     private boolean isRemote = false;
+
+    @Override
+    public String toString() {
+        return isRemote? "Schedule: Remote" : "";
+    }
 }

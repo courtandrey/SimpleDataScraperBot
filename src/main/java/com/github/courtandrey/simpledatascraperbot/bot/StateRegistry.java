@@ -24,7 +24,8 @@ public class StateRegistry {
     }
 
     public enum DialogType {
-        ADD_REQUEST
+        ADD_REQUEST,
+        DELETE_REQUEST
     }
 
     public record State(Message message, Dialog dialog) {}
@@ -45,7 +46,7 @@ public class StateRegistry {
             else {
                 commands.get(chatId).add(new State(
                         message,
-                        message.getText().equals("/add") ? new Dialog(0, DialogType.ADD_REQUEST) : null
+                        isDialogCommand(message.getText()) ? getDialogFromCommand(message.getText()) : null
                 ));
             }
         }
@@ -54,9 +55,29 @@ public class StateRegistry {
             LinkedList<State> states = new LinkedList<>();
             states.add(new State(
                     message,
-                    message.getText().equals("/add") ? new Dialog(0, DialogType.ADD_REQUEST) : null
+                    isDialogCommand(message.getText()) ? getDialogFromCommand(message.getText()) : null
             ));
             commands.put(chatId, states);
+        }
+    }
+
+    private boolean isDialogCommand(String text) {
+        return text.equals("/add") || text.equals("/delete");
+    }
+
+    private Dialog getDialogFromCommand(String text) {
+        switch (text) {
+            case "/add" -> {
+                return new Dialog(0, DialogType.ADD_REQUEST);
+            }
+
+            case "/delete" -> {
+                return new Dialog(0, DialogType.DELETE_REQUEST);
+            }
+
+            default -> {
+                throw new UnsupportedOperationException("This is not a dialog command");
+            }
         }
     }
 

@@ -37,6 +37,17 @@ public class InitScrapingCommand extends BaseCommand{
             return;
         }
 
+        try {
+            absSender.execute(new SendMessage(
+                    String.valueOf(message.getChatId()),
+                    "It will take some time. It depends on amount of requests on how broad they are and on internet " +
+                            "connection stability\nIt is cycled process it means that it will end only when you send " +
+                            "/stop command"
+            ));
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
         CycledProcess process =
                 manager.cycledProcess(
                         1000*60,

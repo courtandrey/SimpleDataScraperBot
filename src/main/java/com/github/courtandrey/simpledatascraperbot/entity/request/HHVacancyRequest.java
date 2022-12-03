@@ -13,6 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public class HHVacancyRequest extends VacancyRequest {
+
     public enum Experience {
         NO,
         BETWEEN_1_AND_3,
@@ -44,5 +45,11 @@ public class HHVacancyRequest extends VacancyRequest {
     @Override
     public int hashCode() {
         return Objects.hash(searchText, experience);
+    }
+
+    @Override
+    public String toString() {
+        return "HeadHunter Request with Text to Search: " + "\"" + searchText + "\"," +
+                " Experience: " + experience.name() + ", " + super.toString();
     }
 }

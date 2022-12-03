@@ -39,4 +39,10 @@ public class HabrCareerVacancyRequest extends VacancyRequest {
     public int hashCode() {
         return Objects.hash(skill, level);
     }
+
+    @Override
+    public String toString() {
+        return "Habr Career Request with skill identified by " + skill + ", level "
+                + level.name() + " " + super.toString();
+    }
 }

@@ -30,6 +30,6 @@ public class DataManager {
 
         List<Data> data = scraperFactory.scrap(user.getRequests());
 
-        return repositoryFactory.update(data);
+        return repositoryFactory.update(data, user);
     }
 }

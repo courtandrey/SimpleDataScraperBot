@@ -14,10 +14,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Vacancy implements Data {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Vacancy extends Data {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false, unique = true, length = 1024)
@@ -29,7 +26,7 @@ public class Vacancy implements Data {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Vacancy vacancy = (Vacancy) o;
-        return id != null && Objects.equals(id, vacancy.id);
+        return getId() != null && Objects.equals(getId(), vacancy.getId());
     }
 
     @Override

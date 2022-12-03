@@ -26,6 +26,14 @@ public class CommandConfiguration {
     public InitScrapingCommand initScrapingCommand() {
         return new InitScrapingCommand();
     }
+    @Bean
+    public ShowRequestsCommand showRequestsCommand() {
+        return new ShowRequestsCommand();
+    }
+    @Bean
+    public DeleteRequestCommand deleteRequestCommand() {
+        return new DeleteRequestCommand();
+    }
 
     public List<BaseCommand> getCommands() {
         List<BaseCommand> baseCommands = new ArrayList<>();
@@ -33,6 +41,8 @@ public class CommandConfiguration {
         baseCommands.add(stopCommand());
         baseCommands.add(addRequestCommand());
         baseCommands.add(initScrapingCommand());
+        baseCommands.add(showRequestsCommand());
+        baseCommands.add(deleteRequestCommand());
         return baseCommands;
     }
 }
