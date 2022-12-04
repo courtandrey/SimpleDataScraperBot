@@ -1,46 +1,43 @@
 package com.github.courtandrey.simpledatascraperbot.service;
 
 import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
-import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
-import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
-import jakarta.transaction.Transactional;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Optional;
 
 @Service
-@Transactional
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Autowired
     public UserService(UserRepository repository) {
         this.userRepository = repository;
     }
 
+    @Transactional
+    public User getReferenceById(Long chatId) {
+        return userRepository.getReferenceById(chatId);
+    }
+
+    @Transactional
     public Optional<User> getUserById(Long id) {
         return userRepository.findByUserId(id);
     }
-
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    @Transactional
     public Optional<User> addIfEmptyByUserId(Message message) throws TelegramApiException {
         if (userRepository.findByUserId(message.getChatId()).isEmpty()) {
             return Optional.of(userRepository.save(new User(message.getFrom())));
         }
 
         return Optional.empty();
-    }
-
-    public User addRequestToUser(Long userId, Request request) {
-        User user = userRepository.findByUserId(userId).orElseThrow(UserNotFoundException::new);
-        user.getRequests().add(request);
-        userRepository.save(user);
-        return user;
     }
 }
