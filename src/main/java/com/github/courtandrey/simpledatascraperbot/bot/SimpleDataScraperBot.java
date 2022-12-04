@@ -5,7 +5,9 @@ import com.github.courtandrey.simpledatascraperbot.entity.request.HHVacancyReque
 import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVacancyRequest;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
+import com.github.courtandrey.simpledatascraperbot.exception.UnknownRequestException;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
+import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,8 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     private StateRegistry registry;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RequestService requestService;
     private final DialogKeeper keeper = new DialogKeeper();
 
     public SimpleDataScraperBot(CommandConfiguration commandConfiguration) {
@@ -146,7 +150,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
         Request request = wrapper.wrapRequest(update.getMessage().getChatId());
 
-       userService.addRequestToUser(
+       requestService.addRequestToUser(
                update.getMessage().getChatId(),
                request
        );
@@ -256,7 +260,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
         }
 
         private boolean check1Step(Update update) throws TelegramApiException {
-            Long requestId;
+            long requestId;
 
             try {
                 requestId = Long.parseLong(update.getMessage().getText());
@@ -268,23 +272,16 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                         "Id should be number"));
                 return false;
             }
+            try {
+                requestService.deleteRequestById(requestId);
+                return true;
+            } catch (UnknownRequestException e) {
+                getBot().execute(new SendMessage(
+                        String.valueOf(update.getMessage().getChatId()),
+                        "There is no request with id: " + requestId));
 
-            User user = userService.getUserById(update.getMessage().getFrom().getId())
-                    .orElseThrow(UserNotFoundException::new);
-
-            for (Request r:user.getRequests()) {
-                if (r.getId().equals(requestId)) {
-                    user.getRequests().remove(r);
-                    userService.save(user);
-                    return true;
-                }
+                return false;
             }
-
-            getBot().execute(new SendMessage(
-                    String.valueOf(update.getMessage().getChatId()),
-                    "There is no request with id: " + requestId));
-
-            return false;
         }
 
         private int checkAndProceed10Step(Update update) throws TelegramApiException {

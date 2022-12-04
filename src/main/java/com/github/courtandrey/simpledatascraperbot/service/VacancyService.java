@@ -2,9 +2,9 @@ package com.github.courtandrey.simpledatascraperbot.service;
 
 import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import com.github.courtandrey.simpledatascraperbot.entity.repository.VacancyRepository;
-import jakarta.transaction.Transactional;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

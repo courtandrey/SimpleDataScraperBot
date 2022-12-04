@@ -18,7 +18,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String username;
-    @OneToMany(fetch = FetchType.EAGER,
+    @OneToMany(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true, mappedBy = "user")
     private Set<Request> requests = new HashSet<>();
