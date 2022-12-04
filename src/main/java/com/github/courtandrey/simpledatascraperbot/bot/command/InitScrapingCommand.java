@@ -1,19 +1,17 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
 import com.github.courtandrey.simpledatascraperbot.configuration.Configuration;
-import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
-import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
 import com.github.courtandrey.simpledatascraperbot.observer.DataManager;
 import com.github.courtandrey.simpledatascraperbot.process.CycledProcess;
 import com.github.courtandrey.simpledatascraperbot.process.strategy.SendNewDataStrategy;
-import com.github.courtandrey.simpledatascraperbot.service.UserService;
+import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public class InitScrapingCommand extends BaseCommand{
     @Autowired
-    private UserService userService;
+    private RequestService requestService;
     @Autowired
     private Configuration configuration;
 
@@ -23,9 +21,7 @@ public class InitScrapingCommand extends BaseCommand{
 
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
-        User user = userService.getUserById(message.getFrom().getId()).orElseThrow(UserNotFoundException::new);
-
-        if (user.getRequests().size() == 0) {
+        if (requestService.findRequestsByUserId(message.getChatId()).size() == 0) {
             sendAnswer(
                     absSender,
                     "You should add request using /add command",

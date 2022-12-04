@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class ScraperFactory {
         scrapers.addAll(scraperConfiguration.getScrapers());
     }
 
-    public List<Data> scrap(Set<Request> urls) {
+    public List<Data> scrap(Collection<Request> urls) {
         List<Data> data = new ArrayList<>();
         scrapers.forEach(x -> {
             List<String> searchStrings = urls

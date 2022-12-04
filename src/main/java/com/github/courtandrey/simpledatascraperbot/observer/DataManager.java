@@ -4,6 +4,7 @@ import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.factory.ScraperFactory;
+import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,14 +18,12 @@ public class DataManager {
     @Autowired
     private ScraperFactory scraperFactory;
     @Autowired
-    private UserService userService;
+    private RequestService requestService;
 
 
     public Collection<Data> getNewDataMatchingRequest(Long userId) throws IOException {
-        User user = userService.getUserById(userId).orElseThrow(UserNotFoundException::new);
+        List<Data> data = scraperFactory.scrap(requestService.findRequestsByUserId(userId));
 
-        List<Data> data = scraperFactory.scrap(user.getRequests());
-
-        return repositoryFactory.update(data, user);
+        return repositoryFactory.update(data, userId);
     }
 }
