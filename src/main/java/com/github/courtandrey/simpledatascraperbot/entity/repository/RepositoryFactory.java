@@ -3,6 +3,7 @@ package com.github.courtandrey.simpledatascraperbot.entity.repository;
 import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
+import com.github.courtandrey.simpledatascraperbot.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,10 @@ import java.util.List;
 
 @Service
 public class RepositoryFactory {
-    private final VacancyRepository vacancyRepository;
+    private final VacancyService vacancyService;
     @Autowired
-    public RepositoryFactory(VacancyRepository vacancyRepository) {
-        this.vacancyRepository = vacancyRepository;
+    public RepositoryFactory(VacancyService vacancyService) {
+        this.vacancyService = vacancyService;
     }
 
     public Collection<Data> update(List<Data> data, User user) {
@@ -23,9 +24,9 @@ public class RepositoryFactory {
         for (Data d:data) {
             d.setUser(user);
             if (d instanceof Vacancy vacancy) {
-                if (vacancyRepository.findByUrl(vacancy.getUrl()).isEmpty()) {
+                if (vacancyService.findByUrl(vacancy.getUrl()).isEmpty()) {
                     uniqueData.add(vacancy);
-                    vacancyRepository.save(vacancy);
+                    vacancyService.save(vacancy);
                 }
             }
         }

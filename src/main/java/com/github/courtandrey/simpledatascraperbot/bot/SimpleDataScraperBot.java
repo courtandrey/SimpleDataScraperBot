@@ -1,12 +1,12 @@
 package com.github.courtandrey.simpledatascraperbot.bot;
 
 import com.github.courtandrey.simpledatascraperbot.bot.command.BaseCommand;
-import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
 import com.github.courtandrey.simpledatascraperbot.entity.request.HHVacancyRequest;
 import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVacancyRequest;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
+import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -25,7 +25,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     @Autowired
     private StateRegistry registry;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     private final DialogKeeper keeper = new DialogKeeper();
 
     public SimpleDataScraperBot(CommandConfiguration commandConfiguration) {
@@ -147,11 +147,11 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
         Request request = wrapper.wrapRequest(update.getMessage().getChatId());
 
         User user =
-                userRepository.findByUserId(update.getMessage().getFrom().getId()).orElseThrow(UserNotFoundException::new);
+                userService.getUserById(update.getMessage().getFrom().getId()).orElseThrow(UserNotFoundException::new);
 
         user.getRequests().add(request);
 
-        userRepository.save(user);
+        userService.save(user);
 
         registry.forget(update.getMessage().getChatId());
     }
@@ -190,7 +190,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 request.setRemote(true);
             }
 
-            request.setUser(userRepository.findByUserId(dialogChain.get(0).getChatId()).orElseThrow(
+            request.setUser(userService.getUserById(dialogChain.get(0).getChatId()).orElseThrow(
                     UserNotFoundException::new
             ));
 
@@ -211,7 +211,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             if (dialogChain.get(100).getText().equals("y")) {
                 request.setRemote(true);
             }
-            request.setUser(userRepository.findByUserId(dialogChain.get(0).getChatId()).orElseThrow(
+            request.setUser(userService.getUserById(dialogChain.get(0).getChatId()).orElseThrow(
                     UserNotFoundException::new
             ));
             return request;
@@ -272,13 +272,13 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 return false;
             }
 
-            User user = userRepository.findByUserId(update.getMessage().getFrom().getId())
+            User user = userService.getUserById(update.getMessage().getFrom().getId())
                     .orElseThrow(UserNotFoundException::new);
 
             for (Request r:user.getRequests()) {
                 if (r.getId().equals(requestId)) {
                     user.getRequests().remove(r);
-                    userRepository.save(user);
+                    userService.save(user);
                     return true;
                 }
             }

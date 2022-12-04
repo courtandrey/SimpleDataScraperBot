@@ -1,7 +1,7 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
-import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
+import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class StartCommand extends BaseCommand {
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     public StartCommand() {
         super("start", "initializes bot");
     }
@@ -18,9 +18,9 @@ public class StartCommand extends BaseCommand {
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         try {
             User newUser = new User(message.getFrom());
-            User oldUser = userRepository.findByUserId(message.getChatId()).orElse(new User());
+            User oldUser = userService.getUserById(message.getChatId()).orElse(new User());
             if (!oldUser.getUserId().equals(newUser.getUserId())) {
-                userRepository.save(newUser);
+                userService.save(newUser);
             }
         } catch (TelegramApiException e) {logger.error("Couldn't save user");}
 

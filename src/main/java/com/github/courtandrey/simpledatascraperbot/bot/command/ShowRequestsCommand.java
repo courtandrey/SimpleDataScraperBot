@@ -1,8 +1,8 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
-import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
+import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
@@ -11,14 +11,14 @@ import java.util.Set;
 
 public class ShowRequestsCommand extends BaseCommand{
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     public ShowRequestsCommand() {
         super("show", "Shows user requests");
     }
 
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
-        User user = userRepository.findByUserId(message.getFrom().getId()).orElse(null);
+        User user = userService.getUserById(message.getFrom().getId()).orElse(null);
 
         if (user == null || user.getRequests().size() == 0) {
             sendAnswer(
