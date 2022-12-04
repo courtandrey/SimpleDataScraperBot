@@ -24,10 +24,7 @@ public class RepositoryFactory {
         for (Data d:data) {
             d.setUser(user);
             if (d instanceof Vacancy vacancy) {
-                if (vacancyService.findByUrl(vacancy.getUrl()).isEmpty()) {
-                    uniqueData.add(vacancy);
-                    vacancyService.save(vacancy);
-                }
+                vacancyService.addIfEmpty(vacancy).ifPresent(uniqueData::add);
             }
         }
         return uniqueData;

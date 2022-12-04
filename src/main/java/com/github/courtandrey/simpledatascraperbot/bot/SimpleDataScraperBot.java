@@ -146,12 +146,10 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
         Request request = wrapper.wrapRequest(update.getMessage().getChatId());
 
-        User user =
-                userService.getUserById(update.getMessage().getFrom().getId()).orElseThrow(UserNotFoundException::new);
-
-        user.getRequests().add(request);
-
-        userService.save(user);
+       userService.addRequestToUser(
+               update.getMessage().getChatId(),
+               request
+       );
 
         registry.forget(update.getMessage().getChatId());
     }
@@ -191,8 +189,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
 
             request.setUser(userService.getUserById(dialogChain.get(0).getChatId()).orElseThrow(
-                    UserNotFoundException::new
-            ));
+                    UserNotFoundException::new));
 
             return request;
         }

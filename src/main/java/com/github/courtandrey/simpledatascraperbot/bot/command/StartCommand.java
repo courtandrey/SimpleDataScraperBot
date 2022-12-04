@@ -1,6 +1,5 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
-import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -17,11 +16,7 @@ public class StartCommand extends BaseCommand {
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         try {
-            User newUser = new User(message.getFrom());
-            User oldUser = userService.getUserById(message.getChatId()).orElse(new User());
-            if (!oldUser.getUserId().equals(newUser.getUserId())) {
-                userService.save(newUser);
-            }
+            userService.addIfEmptyByUserId(message);
         } catch (TelegramApiException e) {logger.error("Couldn't save user");}
 
 

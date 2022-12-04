@@ -24,6 +24,7 @@ public class InitScrapingCommand extends BaseCommand{
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         User user = userService.getUserById(message.getFrom().getId()).orElseThrow(UserNotFoundException::new);
+
         if (user.getRequests().size() == 0) {
             sendAnswer(
                     absSender,

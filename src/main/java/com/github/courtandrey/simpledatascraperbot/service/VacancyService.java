@@ -25,5 +25,12 @@ public class VacancyService {
         return repository.save(vacancy);
     }
 
+    public Optional<Vacancy> addIfEmpty(Vacancy vacancy) {
+        if (repository.findByUrl(vacancy.getUrl()).isEmpty()) {
+            return Optional.of(repository.save(vacancy));
+        }
+        return Optional.empty();
+    }
+
 
 }
