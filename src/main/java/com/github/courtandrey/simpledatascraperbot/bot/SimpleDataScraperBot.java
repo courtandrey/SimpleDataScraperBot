@@ -390,4 +390,3 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     public void processNonCommandUpdate(Update update) {
     }
 }
-

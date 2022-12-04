@@ -1,7 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.observer;
 
 import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
-import com.github.courtandrey.simpledatascraperbot.entity.repository.RepositoryFactory;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.factory.ScraperFactory;
