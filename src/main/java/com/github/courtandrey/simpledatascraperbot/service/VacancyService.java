@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class VacancyService {
     private VacancyRepository repository;
     @Autowired
@@ -24,7 +23,7 @@ public class VacancyService {
     public Vacancy save(Vacancy vacancy) {
         return repository.save(vacancy);
     }
-
+    @Transactional
     public Optional<Vacancy> addIfEmpty(Vacancy vacancy) {
         if (repository.findByUrl(vacancy.getUrl()).isEmpty()) {
             return Optional.of(repository.save(vacancy));
