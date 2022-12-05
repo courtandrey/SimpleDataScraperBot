@@ -2,7 +2,9 @@ package com.github.courtandrey.simpledatascraperbot.service;
 
 import com.github.courtandrey.simpledatascraperbot.entity.repository.UserRepository;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -32,7 +34,7 @@ public class UserService {
     public Optional<User> getUserWithRequests(Long id) {
         Optional<User> user = userRepository.findByUserId(id);
         if (user.isEmpty()) return user;
-        user.get().getRequests().size();
+        Hibernate.initialize(user.get().getRequests());
         return user;
     }
     @Transactional
