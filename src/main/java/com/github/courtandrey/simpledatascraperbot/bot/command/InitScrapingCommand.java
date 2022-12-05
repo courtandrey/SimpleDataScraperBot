@@ -30,9 +30,8 @@ public class InitScrapingCommand extends BaseCommand{
             return;
         }
 
-        DataManager observer = configuration.manager();
         if (processManager.checkIfProcessExists(message.getChatId(),
-                new SendNewDataStrategy(observer, message, absSender))) {
+                new SendNewDataStrategy(null, message, absSender))) {
             sendAnswer(
                     absSender,
                     "Process already executes. If you made /stop command, wait till the end of loop",
@@ -40,6 +39,8 @@ public class InitScrapingCommand extends BaseCommand{
             );
             return;
         }
+
+        DataManager observer = configuration.manager();
 
         CycledProcess process =
                 processManager.cycledProcess(

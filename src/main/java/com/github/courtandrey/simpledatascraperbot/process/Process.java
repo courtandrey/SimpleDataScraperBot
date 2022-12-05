@@ -17,6 +17,7 @@ public abstract class Process extends Thread {
 
     public void kill() {
         isKilled = true;
+        interrupt();
     }
 
     @Override
