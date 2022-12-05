@@ -19,7 +19,6 @@ public class StartCommand extends BaseCommand {
             userService.addIfEmptyByUserId(message);
         } catch (TelegramApiException e) {logger.error("Couldn't save user");}
 
-
         sendAnswer(
                 absSender,
                 """

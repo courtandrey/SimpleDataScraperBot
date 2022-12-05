@@ -27,6 +27,14 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findByUserId(id);
     }
+
+    @Transactional
+    public Optional<User> getUserWithRequests(Long id) {
+        Optional<User> user = userRepository.findByUserId(id);
+        if (user.isEmpty()) return user;
+        user.get().getRequests().size();
+        return user;
+    }
     @Transactional
     public User save(User user) {
         return userRepository.save(user);

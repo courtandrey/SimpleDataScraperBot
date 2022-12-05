@@ -3,7 +3,6 @@ package com.github.courtandrey.simpledatascraperbot.entity.servicedata;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class User {
     public User() {
     }
 
-    public User(org.telegram.telegrambots.meta.api.objects.User user) throws TelegramApiException {
+    public User(org.telegram.telegrambots.meta.api.objects.User user) {
         this.firstName=user.getFirstName();
         this.lastName=user.getLastName();
         this.userId=user.getId();
