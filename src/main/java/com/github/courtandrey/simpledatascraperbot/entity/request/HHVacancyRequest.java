@@ -3,6 +3,7 @@ package com.github.courtandrey.simpledatascraperbot.entity.request;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class HHVacancyRequest extends VacancyRequest {
             updatable = false
     )
     private Experience experience;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @JoinTable(name = "hhvacancy_request_region")
     @Enumerated(EnumType.STRING)
     private Set<Region> regions = new HashSet<>();
@@ -53,7 +54,7 @@ public class HHVacancyRequest extends VacancyRequest {
     @Override
     public String toString() {
         String regionString;
-        if (regions.size() > 0) {
+        if (Hibernate.isInitialized(regions) && regions.size() > 0) {
             StringBuilder regionStringBuilder = new StringBuilder();
             regionStringBuilder.append(", Search in regions: ");
             for (Region r : regions) {

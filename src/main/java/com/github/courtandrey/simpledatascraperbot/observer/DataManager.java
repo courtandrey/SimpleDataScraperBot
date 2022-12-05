@@ -7,11 +7,14 @@ import com.github.courtandrey.simpledatascraperbot.observer.scraper.factory.Scra
 import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
+@Component
+@Scope(scopeName = "prototype")
 public class DataManager {
     @Autowired
     private RepositoryFactory repositoryFactory;

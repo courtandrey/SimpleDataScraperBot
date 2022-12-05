@@ -1,8 +1,5 @@
 package com.github.courtandrey.simpledatascraperbot.bot.command;
 
-import com.github.courtandrey.simpledatascraperbot.configuration.Configuration;
-import com.github.courtandrey.simpledatascraperbot.observer.DataManager;
-import com.github.courtandrey.simpledatascraperbot.process.CycledProcess;
 import com.github.courtandrey.simpledatascraperbot.process.strategy.SendNewDataStrategy;
 import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +9,6 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 public class InitScrapingCommand extends BaseCommand{
     @Autowired
     private RequestService requestService;
-    @Autowired
-    private Configuration configuration;
 
     public InitScrapingCommand() {
         super("init", "init scraping");
@@ -30,8 +25,7 @@ public class InitScrapingCommand extends BaseCommand{
             return;
         }
 
-        if (processManager.checkIfProcessExists(message.getChatId(),
-                new SendNewDataStrategy(null, message, absSender))) {
+        if (processManager.checkIfProcessExists(message.getChatId(), SendNewDataStrategy.class)) {
             sendAnswer(
                     absSender,
                     "Process already executes. If you made /stop command, wait till the end of loop",
@@ -40,22 +34,10 @@ public class InitScrapingCommand extends BaseCommand{
             return;
         }
 
-        DataManager observer = configuration.manager();
-
-        CycledProcess process =
-                processManager.cycledProcess(
-                        1000*60*10,
-                        message.getChatId(),
-                        new SendNewDataStrategy(observer, message, absSender));
-
-        sendAnswer(
-                absSender,
-                "It will take some time. It depends on amount of requests on how broad they are and on internet " +
-                        "connection stability\nIt is cycled process it means that it will end only when you send " +
-                        "/stop command",
-                message.getChatId()
-        );
-
-       process.start();
+       sendAnswer(
+               absSender,
+               "How long should be latency (in minutes)?",
+               message.getChatId()
+       );
     }
 }

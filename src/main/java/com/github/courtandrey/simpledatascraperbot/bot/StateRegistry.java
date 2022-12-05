@@ -25,7 +25,8 @@ public class StateRegistry {
 
     public enum DialogType {
         ADD_REQUEST,
-        DELETE_REQUEST
+        DELETE_REQUEST,
+        INIT_SCRAPING
     }
 
     public record State(Message message, Dialog dialog) {}
@@ -62,11 +63,11 @@ public class StateRegistry {
     }
 
     private boolean isDialogCommand(String text) {
-        return text.equals("/add") || text.equals("/delete");
+        return text.trim().equals("/add") || text.trim().equals("/delete") || text.trim().equals("/init");
     }
 
     private Dialog getDialogFromCommand(String text) {
-        switch (text) {
+        switch (text.trim()) {
             case "/add" -> {
                 return new Dialog(0, DialogType.ADD_REQUEST);
             }
@@ -75,9 +76,11 @@ public class StateRegistry {
                 return new Dialog(0, DialogType.DELETE_REQUEST);
             }
 
-            default -> {
-                throw new UnsupportedOperationException("This is not a dialog command");
+            case "/init" -> {
+                return new Dialog(0, DialogType.INIT_SCRAPING);
             }
+
+            default -> throw new UnsupportedOperationException("This is not a dialog command");
         }
     }
 

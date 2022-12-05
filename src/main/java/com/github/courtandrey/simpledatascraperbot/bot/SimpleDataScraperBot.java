@@ -8,8 +8,12 @@ import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.exception.UnknownRequestException;
 import com.github.courtandrey.simpledatascraperbot.exception.UnmetRequirementsException;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
+import com.github.courtandrey.simpledatascraperbot.process.CycledProcess;
+import com.github.courtandrey.simpledatascraperbot.process.ProcessManager;
 import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -22,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
+    private final static Logger LOGGER = LoggerFactory.getLogger(SimpleDataScraperBot.class);
     @Value("${BOT_NAME}")
     private String BOT_USERNAME;
     @Value("${BOT_TOKEN}")
@@ -32,6 +37,8 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     private UserService userService;
     @Autowired
     private RequestService requestService;
+    @Autowired
+    private ProcessManager processManager;
     private final DialogKeeper keeper = new DialogKeeper();
 
     public SimpleDataScraperBot(CommandConfiguration commandConfiguration) {
@@ -57,7 +64,9 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 if (state.dialog() != null) {
                     try {
                         proceedDialog(u);
-                    } catch (TelegramApiException ignored) {}
+                    } catch (TelegramApiException e) {
+                        LOGGER.error("Error occurred: " + e);
+                    }
                 }
             }
         }
@@ -72,13 +81,49 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
         if (registry.getLastState(update.getMessage().getChatId()).dialog().getType()
                 == StateRegistry.DialogType.ADD_REQUEST) {
             proceedAddRequestDialog(update);
+            return;
         }
 
         else  if (registry.getLastState(update.getMessage().getChatId()).dialog().getType()
             == StateRegistry.DialogType.DELETE_REQUEST) {
             proceedDeleteRequestDialog(update);
+            return;
         }
 
+        else if (registry.getLastState(update.getMessage().getChatId()).dialog().getType()
+            == StateRegistry.DialogType.INIT_SCRAPING) {
+            proceedInitScrapingDialog(update);
+            return;
+        }
+
+        throw new UnsupportedOperationException("This is not a registered dialog type");
+    }
+
+    private void proceedInitScrapingDialog(Update update) throws TelegramApiException {
+        StateRegistry.Dialog dialog = registry.getLastState(update.getMessage().getChatId()).dialog();
+
+        switch (dialog.getStep()) {
+            case 0 -> {
+                if (keeper.check0StepForInitDialog(update)) {
+                    CycledProcess process =
+                            processManager.cycledProcess(
+                                    Long.parseLong(update.getMessage().getText()) * 1000 * 60,
+                                    update.getMessage().getChatId(),
+                                    processManager.sendNewDataStrategy(update.getMessage().getChatId(), getBot()));
+
+                    getBot().execute(new SendMessage(
+                            String.valueOf(update.getMessage().getChatId()),
+                            "It will take some time. It depends on amount of requests on how broad they are and on internet " +
+                                    "connection stability\nIt is cycled process it means that it will end only when you send " +
+                                    "/stop command"
+                    ));
+
+                    process.start();
+                }
+            }
+
+            default -> throw new UnsupportedOperationException("Unknown step of dialog");
+        }
     }
 
     private void proceedDeleteRequestDialog(Update update) throws TelegramApiException {
@@ -86,7 +131,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
         switch (dialog.getStep()) {
             case 0 -> {
-                if (keeper.check1Step(update)) {
+                if (keeper.check0StepForDeleteDialog(update)) {
                     getBot().execute(new SendMessage(
                             String.valueOf(update.getMessage().getChatId()),
                             "Request was successfully deleted"));
@@ -102,55 +147,57 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
         switch (dialog.getStep()) {
             case 0 -> {
-                int nextStep = keeper.checkAndProceed0Step(update);
+                int nextStep = keeper.checkAndProceed0StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 10 -> {
-                int nextStep = keeper.checkAndProceed10Step(update);
+                int nextStep = keeper.checkAndProceed10StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 11 -> {
-                int nextStep = keeper.checkAndProceed11Step(update);
+                int nextStep = keeper.checkAndProceed11StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 12 -> {
-                int nextStep = keeper.checkAndProceed12Step(update);
+                int nextStep = keeper.checkAndProceed12StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 20 -> {
-                int nextStep = keeper.checkAndProceed20Step(update);
+                int nextStep = keeper.checkAndProceed20StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 21 -> {
-                int nextStep = keeper.checkAndProceed21Step(update);
+                int nextStep = keeper.checkAndProceed21StepForAddDialog(update);
                 if (nextStep != -1) {
                     dialog.setNextStep(nextStep);
                 }
             }
 
             case 100 -> {
-                if (keeper.check100Step(update)) {
+                if (keeper.check100StepForAddDialog(update)) {
                     wrapAddRequest(update);
                     getBot().execute(new SendMessage(
                             String.valueOf(update.getMessage().getChatId()),
                             "You request is registered"));
                 }
             }
+
+            default -> throw new UnsupportedOperationException("Unknown step of dialog");
         }
     }
 
@@ -271,7 +318,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
     private class DialogKeeper{
 
-        private int checkAndProceed0Step(Update update) throws TelegramApiException {
+        private int checkAndProceed0StepForAddDialog(Update update) throws TelegramApiException {
             if (update.getMessage().getText().equals("1")) {
                 getBot().execute(new SendMessage(
                         String.valueOf(update.getMessage().getChatId()),
@@ -295,7 +342,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private boolean check1Step(Update update) throws TelegramApiException {
+        private boolean check0StepForDeleteDialog(Update update) throws TelegramApiException {
             long requestId;
 
             try {
@@ -320,7 +367,16 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private int checkAndProceed10Step(Update update) throws TelegramApiException {
+        private boolean check0StepForInitDialog(Update update) throws TelegramApiException {
+            try {
+                Integer.parseInt(update.getMessage().getText());
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        private int checkAndProceed10StepForAddDialog(Update update) throws TelegramApiException {
             if (update.getMessage().getText().length() < 2) {
                 getBot().execute(new SendMessage(
                         String.valueOf(update.getMessage().getChatId()),
@@ -342,7 +398,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private int checkAndProceed11Step(Update update) throws TelegramApiException {
+        private int checkAndProceed11StepForAddDialog(Update update) throws TelegramApiException {
             if (!update.getMessage().getText().equals("1") &&
                     !update.getMessage().getText().equals("2") &&
                     !update.getMessage().getText().equals("3") &&
@@ -373,7 +429,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private int checkAndProceed12Step(Update update) throws TelegramApiException {
+        private int checkAndProceed12StepForAddDialog(Update update) throws TelegramApiException {
             try {
                 List<Integer> ints = Arrays.stream(update.getMessage().getText().trim().split(","))
                         .map(String::trim)
@@ -397,7 +453,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private int checkAndProceed20Step(Update update) throws TelegramApiException {
+        private int checkAndProceed20StepForAddDialog(Update update) throws TelegramApiException {
             try {
                 Integer.parseInt(update.getMessage().getText());
                 getBot().execute(new SendMessage(
@@ -419,7 +475,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private int checkAndProceed21Step(Update update) throws TelegramApiException {
+        private int checkAndProceed21StepForAddDialog(Update update) throws TelegramApiException {
             try {
                 int num = Integer.parseInt(update.getMessage().getText());
                 if (num > 0 && num < 6) {
@@ -439,7 +495,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             }
         }
 
-        private boolean check100Step(Update update) throws TelegramApiException {
+        private boolean check100StepForAddDialog(Update update) throws TelegramApiException {
             if (!update.getMessage().getText().equals("y") && !update.getMessage().getText().equals("n")) {
                 getBot().execute(new SendMessage(
                         String.valueOf(update.getMessage().getChatId()),
@@ -457,5 +513,19 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
     @Override
     public void processNonCommandUpdate(Update update) {
+        try {
+            execute(new SendMessage(
+                    String.valueOf(update.getMessage().getChatId()),
+                    """
+                            It is not registered command. You can use following commands:
+                            You can use /init command to init scraping if you already have requests
+                            If you don't have any request or want to add new use /add command
+                            To show all registered requests use /show command
+                            To delete one of requests use /delete command
+                            """
+            ));
+        } catch (TelegramApiException e) {
+            LOGGER.error("Error occurred: " + e);
+        }
     }
 }

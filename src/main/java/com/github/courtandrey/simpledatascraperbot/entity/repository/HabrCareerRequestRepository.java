@@ -1,7 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.entity.repository;
 
 import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVacancyRequest;
-import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface HabrCareerRequestRepository extends RequestRepository<HabrCareerVacancyRequest>{
-    Streamable<Request> findByUserUserId(Long userId);
+    Streamable<HabrCareerVacancyRequest> findByUserUserId(Long userId);
 }

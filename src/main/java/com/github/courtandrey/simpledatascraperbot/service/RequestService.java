@@ -7,12 +7,16 @@ import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVaca
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UnknownRequestException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestService {
@@ -74,7 +78,16 @@ public class RequestService {
 
     @Transactional
     public Collection<Request> findRequestsByUserId(Long chatId) {
-        return habrCareerRequestRepository.findByUserUserId(chatId)
-                .and(hhRequestRepository.findByUserUserId(chatId)).stream().toList();
+        Set<Request> generifiedRequests = new HashSet<>();
+
+        Set<HHVacancyRequest> requestHH = hhRequestRepository.findByUserUserId(chatId).stream().collect(Collectors.toSet());
+        requestHH.forEach(HH -> Hibernate.initialize(HH.getRegions()));
+
+        generifiedRequests.addAll(requestHH);
+        generifiedRequests.addAll(
+                habrCareerRequestRepository.findByUserUserId(chatId).stream().toList()
+        );
+
+        return generifiedRequests;
     }
 }

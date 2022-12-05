@@ -3,14 +3,12 @@ package com.github.courtandrey.simpledatascraperbot.process;
 import com.github.courtandrey.simpledatascraperbot.process.strategy.Strategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 public class CycledProcess extends Process {
     @Autowired
     private ProcessManager processManager;
-    private final int waitTime;
+    private final long waitTime;
 
-    public CycledProcess(Strategy strategy, int waitTime, Long chatId) {
+    public CycledProcess(Strategy strategy, long waitTime, Long chatId) {
         super(strategy, chatId);
         this.waitTime = waitTime;
     }

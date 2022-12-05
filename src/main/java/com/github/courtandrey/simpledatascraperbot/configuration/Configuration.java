@@ -26,12 +26,6 @@ public class Configuration {
     }
 
     @Bean
-    @Scope(scopeName = "prototype")
-    public DataManager manager() {
-        return new DataManager();
-    }
-
-    @Bean
     public TelegramBotsApi telegramBotsApi() {
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
