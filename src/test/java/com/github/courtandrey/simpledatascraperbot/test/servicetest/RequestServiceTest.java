@@ -11,6 +11,7 @@ import org.hibernate.Hibernate;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 public class RequestServiceTest {
     @Autowired
     private RequestService requestService;
@@ -27,7 +29,7 @@ public class RequestServiceTest {
 
     private User generatedUser;
 
-    @BeforeAll
+    @BeforeEach
     void generateUser() {
         long id = 0;
         while (userService.getUserById(id).isPresent()) {
@@ -53,7 +55,6 @@ public class RequestServiceTest {
     }
 
     @Test
-    @Order(Integer.MAX_VALUE)
     public void testAddRequestToUser() {
         HHVacancyRequest wrongRequest = new HHVacancyRequest();
         HabrCareerVacancyRequest wrongHabrRequest = new HabrCareerVacancyRequest();
@@ -90,7 +91,7 @@ public class RequestServiceTest {
         }
     }
 
-    @AfterAll
+    @AfterEach
     public void clean() {
         userService.deleteUserById(generatedUser.getUserId());
     }
