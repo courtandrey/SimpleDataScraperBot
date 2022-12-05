@@ -5,6 +5,7 @@ import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVaca
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.HabrCareerParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HabrCareerScraper extends VacancyScraper {
@@ -15,7 +16,7 @@ public class HabrCareerScraper extends VacancyScraper {
 
     @Override
     public List<Vacancy> scrap(List<String> urls) {
-        this.urls.addAll(urls);
+        this.urls = new ArrayList<>(urls);
         return iterateUrls();
     }
 

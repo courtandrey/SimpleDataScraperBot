@@ -5,6 +5,7 @@ import com.github.courtandrey.simpledatascraperbot.entity.request.HHVacancyReque
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.HHParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HHScraper extends VacancyScraper {
@@ -15,7 +16,7 @@ public class HHScraper extends VacancyScraper {
 
     @Override
     public List<Vacancy> scrap(List<String> urls) {
-        this.urls.addAll(urls);
+        this.urls = new ArrayList<>(urls);
         return iterateUrls();
     }
 
