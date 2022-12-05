@@ -13,6 +13,12 @@ import java.util.Objects;
 @Getter
 @Setter
 public class HabrCareerVacancyRequest extends VacancyRequest {
+    @Column(nullable = false, updatable = false)
+    private Integer skill;
+    @Column(nullable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    private Level level;
+
     public enum Level {
         INTERN,
         JUNIOR,
@@ -21,11 +27,6 @@ public class HabrCareerVacancyRequest extends VacancyRequest {
         LEAD
     }
 
-    @Column(nullable = false, updatable = false)
-    private Integer skill;
-    @Column(nullable = false, updatable = false)
-    @Enumerated(EnumType.STRING)
-    private Level level;
 
     @Override
     public boolean equals(Object o) {

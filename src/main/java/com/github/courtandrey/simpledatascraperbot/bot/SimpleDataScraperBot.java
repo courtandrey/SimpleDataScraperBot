@@ -132,9 +132,9 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
         switch (dialog.getStep()) {
             case 0 -> {
                 if (keeper.check0StepForDeleteDialog(update)) {
-                    getBot().execute(new SendMessage(
-                            String.valueOf(update.getMessage().getChatId()),
-                            "Request was successfully deleted"));
+                    execute(new SendMessage(
+                       String.valueOf(update.getMessage().getChatId()),
+                        "Request was successfully deleted"));
                     registry.forget(update.getMessage().getChatId());
                 }
             }
@@ -190,10 +190,18 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
             case 100 -> {
                 if (keeper.check100StepForAddDialog(update)) {
-                    wrapAddRequest(update);
-                    getBot().execute(new SendMessage(
-                            String.valueOf(update.getMessage().getChatId()),
-                            "You request is registered"));
+                    Request request = wrapAddRequest(update);
+
+                    requestService.addRequestToUser(
+                            update.getMessage().getChatId(),
+                            request
+                    );
+
+                    registry.forget(update.getMessage().getChatId());
+
+                    execute(new SendMessage(
+                       String.valueOf(update.getMessage().getChatId()),
+                        "You request is registered"));
                 }
             }
 
@@ -201,17 +209,10 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
         }
     }
 
-    private void wrapAddRequest(Update update) {
+    private Request wrapAddRequest(Update update) {
         RequestWrapper wrapper = new RequestWrapper();
 
-        Request request = wrapper.wrapRequest(update.getMessage().getChatId());
-
-       requestService.addRequestToUser(
-               update.getMessage().getChatId(),
-               request
-       );
-
-        registry.forget(update.getMessage().getChatId());
+        return wrapper.wrapRequest(update.getMessage().getChatId());
     }
 
     private class RequestWrapper {
@@ -522,6 +523,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                             If you don't have any request or want to add new use /add command
                             To show all registered requests use /show command
                             To delete one of requests use /delete command
+                            To stop all cycled processes use /stop command
                             """
             ));
         } catch (TelegramApiException e) {

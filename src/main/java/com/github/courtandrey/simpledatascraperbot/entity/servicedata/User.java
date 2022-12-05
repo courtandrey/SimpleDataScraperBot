@@ -3,6 +3,7 @@ package com.github.courtandrey.simpledatascraperbot.entity.servicedata;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 public class User {
     @Id
     @Column(nullable = false, unique = true)
@@ -31,6 +33,8 @@ public class User {
         this.userId=user.getId();
         this.username=user.getUserName();
     }
+
+
 
     @Override
     public boolean equals(Object o) {

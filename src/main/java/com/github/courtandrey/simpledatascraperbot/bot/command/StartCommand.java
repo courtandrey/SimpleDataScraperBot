@@ -27,6 +27,7 @@ public class StartCommand extends BaseCommand {
                             If you don't have any request or want to add new use /add command
                             To show all registered requests use /show command
                             To delete one of requests use /delete command
+                            To stop all cycled processes use /stop command
                             """,
                 message.getChatId()
         );

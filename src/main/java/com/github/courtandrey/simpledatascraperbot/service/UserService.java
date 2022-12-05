@@ -4,7 +4,6 @@ import com.github.courtandrey.simpledatascraperbot.entity.repository.UserReposit
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -49,5 +48,15 @@ public class UserService {
         }
 
         return Optional.empty();
+    }
+
+    @Transactional
+    public Optional<User> getUserByUsername(String userName) {
+        return userRepository.findByUsername(userName);
+    }
+
+    @Transactional
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
     }
 }

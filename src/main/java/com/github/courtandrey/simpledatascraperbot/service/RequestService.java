@@ -71,9 +71,17 @@ public class RequestService {
 
         if (request instanceof HHVacancyRequest hhVacancyRequest) {
             hhRequestRepository.delete(hhVacancyRequest);
-        } else if (request instanceof HabrCareerVacancyRequest habrCareerVacancyRequest) {
+        }
+
+        else if (request instanceof HabrCareerVacancyRequest habrCareerVacancyRequest) {
             habrCareerRequestRepository.delete(habrCareerVacancyRequest);
         }
+    }
+
+    @Transactional
+    public int countByUserId(Long userId) {
+        return habrCareerRequestRepository.findByUserUserId(userId).map(x -> (Request) x)
+                .and(hhRequestRepository.findByUserUserId(userId)).stream().toList().size();
     }
 
     @Transactional
@@ -89,5 +97,20 @@ public class RequestService {
         );
 
         return generifiedRequests;
+    }
+
+    @Transactional
+    public void deleteRequest(Request request) {
+        if (request instanceof HHVacancyRequest hhVacancyRequest) {
+            hhRequestRepository.delete(hhVacancyRequest);
+            return;
+        }
+
+        else if (request instanceof HabrCareerVacancyRequest habrCareerVacancyRequest) {
+            habrCareerRequestRepository.delete(habrCareerVacancyRequest);
+            return;
+        }
+
+        throw new UnknownRequestException("Unknown request type");
     }
 }

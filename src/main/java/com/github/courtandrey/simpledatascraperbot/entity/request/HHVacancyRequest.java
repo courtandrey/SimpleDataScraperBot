@@ -13,14 +13,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class HHVacancyRequest extends VacancyRequest {
-
-    public enum Experience {
-        NO,
-        BETWEEN_1_AND_3,
-        BETWEEN_3_AND_6,
-        MORE_THAN_6
-    }
-
     @Column(
             nullable = false,
             updatable = false,
@@ -37,6 +29,14 @@ public class HHVacancyRequest extends VacancyRequest {
     @JoinTable(name = "hhvacancy_request_region")
     @Enumerated(EnumType.STRING)
     private Set<Region> regions = new HashSet<>();
+
+    public enum Experience {
+        NO,
+        BETWEEN_1_AND_3,
+        BETWEEN_3_AND_6,
+        MORE_THAN_6
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -16,7 +16,7 @@ public class InitScrapingCommand extends BaseCommand{
 
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
-        if (requestService.findRequestsByUserId(message.getChatId()).size() == 0) {
+        if (requestService.countByUserId(message.getChatId()) == 0) {
             sendAnswer(
                     absSender,
                     "You should add request using /add command",
