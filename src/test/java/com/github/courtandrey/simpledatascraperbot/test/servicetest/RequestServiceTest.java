@@ -11,6 +11,7 @@ import org.hibernate.Hibernate;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Transactional
+@ActiveProfiles("test")
 public class RequestServiceTest {
     @Autowired
     private RequestService requestService;
@@ -29,7 +30,7 @@ public class RequestServiceTest {
 
     private User generatedUser;
 
-    @BeforeEach
+    @BeforeAll
     void generateUser() {
         long id = 0;
         while (userService.getUserById(id).isPresent()) {
@@ -55,9 +56,11 @@ public class RequestServiceTest {
     }
 
     @Test
+    @Order(Integer.MAX_VALUE)
     public void testAddRequestToUser() {
         HHVacancyRequest wrongRequest = new HHVacancyRequest();
         HabrCareerVacancyRequest wrongHabrRequest = new HabrCareerVacancyRequest();
+
         Assertions.assertThrows(Exception.class, () -> requestService.addRequestToUser(
                 generatedUser.getUserId(), wrongRequest
         ));
@@ -90,8 +93,7 @@ public class RequestServiceTest {
             }
         }
     }
-
-    @AfterEach
+    @AfterAll
     public void clean() {
         userService.deleteUserById(generatedUser.getUserId());
     }
