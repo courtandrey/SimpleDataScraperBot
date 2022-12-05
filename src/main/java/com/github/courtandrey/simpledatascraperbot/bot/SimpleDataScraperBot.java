@@ -514,6 +514,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
     @Override
     public void processNonCommandUpdate(Update update) {
+        if (registry.getLastState(update.getMessage().getChatId()).dialog() != null) return;
         try {
             execute(new SendMessage(
                     String.valueOf(update.getMessage().getChatId()),
