@@ -43,7 +43,7 @@ public class InitScrapingCommand extends BaseCommand{
 
         CycledProcess process =
                 processManager.cycledProcess(
-                        1000*60,
+                        1000*60*10,
                         message.getChatId(),
                         new SendNewDataStrategy(observer, message, absSender));
 

@@ -15,6 +15,6 @@ public abstract class VacancyRequest extends Request{
 
     @Override
     public String toString() {
-        return isRemote? "Schedule: Remote" : "";
+        return isRemote? ", Schedule: Remote" : "";
     }
 }

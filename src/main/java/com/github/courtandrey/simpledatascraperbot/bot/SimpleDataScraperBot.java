@@ -3,9 +3,10 @@ package com.github.courtandrey.simpledatascraperbot.bot;
 import com.github.courtandrey.simpledatascraperbot.bot.command.BaseCommand;
 import com.github.courtandrey.simpledatascraperbot.entity.request.HHVacancyRequest;
 import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVacancyRequest;
+import com.github.courtandrey.simpledatascraperbot.entity.request.Region;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
-import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import com.github.courtandrey.simpledatascraperbot.exception.UnknownRequestException;
+import com.github.courtandrey.simpledatascraperbot.exception.UnmetRequirementsException;
 import com.github.courtandrey.simpledatascraperbot.exception.UserNotFoundException;
 import com.github.courtandrey.simpledatascraperbot.service.RequestService;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     @Value("${BOT_NAME}")
@@ -120,6 +122,13 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 }
             }
 
+            case 12 -> {
+                int nextStep = keeper.checkAndProceed12Step(update);
+                if (nextStep != -1) {
+                    dialog.setNextStep(nextStep);
+                }
+            }
+
             case 20 -> {
                 int nextStep = keeper.checkAndProceed20Step(update);
                 if (nextStep != -1) {
@@ -187,6 +196,33 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 case "3" -> request.setExperience(HHVacancyRequest.Experience.BETWEEN_3_AND_6);
                 case "4" -> request.setExperience(HHVacancyRequest.Experience.MORE_THAN_6);
             }
+
+            Set<Integer> regionInts =
+                    Arrays.stream(dialogChain.get(12).getText().trim().split(","))
+                    .map(String::trim)
+                    .filter(x -> x.length() > 0)
+                    .map(Integer::parseInt)
+                    .filter(x -> (x > 0) && (x < 11))
+                    .collect(Collectors.toSet());
+            Set<Region> regions = new HashSet<>();
+
+            if (!regionInts.contains(1)) {
+                for (int regionInt:regionInts) {
+                    switch (regionInt) {
+                        case 2 -> regions.add(Region.RUSSIA);
+                        case 3 -> regions.add(Region.UKRAINE);
+                        case 4 -> regions.add(Region.AZERBAIJAN);
+                        case 5 -> regions.add(Region.BELARUS);
+                        case 6 -> regions.add(Region.KAZAKHSTAN);
+                        case 7 -> regions.add(Region.KYRGYZSTAN);
+                        case 8 -> regions.add(Region.UZBEKISTAN);
+                        case 9 -> regions.add(Region.GEORGIA);
+                        case 10 -> regions.add(Region.OTHER);
+                    }
+                }
+            }
+
+            request.setRegions(regions);
 
             if (dialogChain.get(100).getText().equals("y")) {
                 request.setRemote(true);
@@ -320,8 +356,44 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             else {
                 getBot().execute(new SendMessage(
                         String.valueOf(update.getMessage().getChatId()),
+                        """
+                                Do you consider special region? Choose several using comma as delimiter
+                                1. Doesn't matter
+                                2. Russia
+                                3. Ukraine
+                                4. Azerbaijan
+                                5. Belarus
+                                6. Kazakhstan
+                                7. Kyrgyzstan
+                                8. Uzbekistan
+                                9. Georgia
+                                10. Other region
+                               """));
+                return 12;
+            }
+        }
+
+        private int checkAndProceed12Step(Update update) throws TelegramApiException {
+            try {
+                List<Integer> ints = Arrays.stream(update.getMessage().getText().trim().split(","))
+                        .map(String::trim)
+                        .filter(x -> x.length() > 0)
+                        .map(Integer::parseInt)
+                        .filter(x -> (x > 0) && (x < 11))
+                        .distinct()
+                        .toList();
+
+                if (ints.size() == 0) throw new UnmetRequirementsException();
+
+                getBot().execute(new SendMessage(
+                        String.valueOf(update.getMessage().getChatId()),
                         "Do you consider only remote work? y/n"));
                 return 100;
+            } catch (Exception e) {
+                getBot().execute(new SendMessage(
+                        String.valueOf(update.getMessage().getChatId()),
+                        "You mast provide only numbers between 1-10, delimited with comma"));
+                return -1;
             }
         }
 

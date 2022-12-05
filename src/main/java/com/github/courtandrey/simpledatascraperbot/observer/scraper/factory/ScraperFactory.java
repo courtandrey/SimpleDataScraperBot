@@ -2,7 +2,7 @@ package com.github.courtandrey.simpledatascraperbot.observer.scraper.factory;
 
 import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
-import com.github.courtandrey.simpledatascraperbot.entity.request.URLCreator;
+import com.github.courtandrey.simpledatascraperbot.observer.URLCreator;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.ScraperConfig;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.Scraper;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Scope(scopeName = "prototype")

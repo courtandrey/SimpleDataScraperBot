@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 public class ProcessManager {
@@ -18,6 +17,9 @@ public class ProcessManager {
     @Scope(scopeName = "prototype")
     public CycledProcess cycledProcess(int waitTime, Long chatId, Strategy strategy) {
         CycledProcess process = new CycledProcess(strategy, waitTime, chatId);
+
+        process.setName("Cycled Process " + strategy.getClass().getSimpleName() + ": " + chatId);
+
         if (processes.get(chatId) == null) {
             List<Process> processList = new ArrayList<>();
             processList.add(process);
@@ -25,6 +27,7 @@ public class ProcessManager {
         } else {
             processes.get(chatId).add(process);
         }
+
         return process;
     }
 
