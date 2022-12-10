@@ -6,7 +6,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Optional;
@@ -42,9 +41,9 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<User> addIfEmptyByUserId(Message message) throws TelegramApiException {
-        if (userRepository.findByUserId(message.getChatId()).isEmpty()) {
-            return Optional.of(userRepository.save(new User(message.getFrom())));
+    public Optional<User> addIfEmpty(org.telegram.telegrambots.meta.api.objects.User user) throws TelegramApiException {
+        if (userRepository.findByUserId(user.getId()).isEmpty()) {
+            return Optional.of(userRepository.save(new User(user)));
         }
 
         return Optional.empty();
