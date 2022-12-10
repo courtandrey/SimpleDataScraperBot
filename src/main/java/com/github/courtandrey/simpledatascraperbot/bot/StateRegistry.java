@@ -95,4 +95,8 @@ public class StateRegistry {
     public State getLastState(Long chatId) {
         return commands.get(chatId).getLast();
     }
+
+    public boolean isSessionActive(Long chatId) {
+        return commands.containsKey(chatId);
+    }
 }

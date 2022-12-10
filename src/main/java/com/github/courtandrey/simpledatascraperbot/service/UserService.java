@@ -41,7 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public Optional<User> addIfEmpty(org.telegram.telegrambots.meta.api.objects.User user) throws TelegramApiException {
+    public Optional<User> addIfEmpty(org.telegram.telegrambots.meta.api.objects.User user) {
         if (userRepository.findByUserId(user.getId()).isEmpty()) {
             return Optional.of(userRepository.save(new User(user)));
         }

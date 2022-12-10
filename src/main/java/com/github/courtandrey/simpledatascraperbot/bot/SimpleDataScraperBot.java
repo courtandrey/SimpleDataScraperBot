@@ -57,6 +57,9 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
     @Override
     public void onUpdatesReceived(List<Update> updates) {
         for (Update u : updates) {
+            if (!registry.isSessionActive(u.getMessage().getChatId())) {
+                userService.addIfEmpty(u.getMessage().getFrom());
+            }
             registry.register(u.getMessage(), u.getMessage().getChatId());
             if (registry.getChain(u.getMessage().getChatId()) != null) {
                 StateRegistry.State state = registry.getLastState(u.getMessage().getChatId());
