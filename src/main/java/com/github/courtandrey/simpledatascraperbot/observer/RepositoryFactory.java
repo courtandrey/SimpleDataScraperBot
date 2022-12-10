@@ -22,13 +22,6 @@ public class RepositoryFactory {
     }
 
     public Collection<Data> update(List<Data> data, Long userId) {
-        Collection<Data> uniqueData = new ArrayList<>();
-        for (Data d:data) {
-            d.setUser(userService.getReferenceById(userId));
-            if (d instanceof Vacancy vacancy) {
-                vacancyService.addIfEmpty(vacancy).ifPresent(uniqueData::add);
-            }
-        }
-        return uniqueData;
+        return vacancyService.addIfEmptyForUser(data, userId);
     }
 }

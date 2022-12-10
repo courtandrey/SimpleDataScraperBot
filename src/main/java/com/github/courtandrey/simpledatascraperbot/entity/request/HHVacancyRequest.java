@@ -28,6 +28,9 @@ public class HHVacancyRequest extends VacancyRequest {
     @ElementCollection(fetch = FetchType.LAZY)
     @JoinTable(name = "hhvacancy_request_region")
     @Enumerated(EnumType.STRING)
+    @org.hibernate.annotations.Fetch(
+            org.hibernate.annotations.FetchMode.SUBSELECT
+    )
     private Set<Region> regions = new HashSet<>();
 
     public enum Experience {

@@ -1,10 +1,7 @@
 package com.github.courtandrey.simpledatascraperbot.entity.data;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -13,6 +10,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@org.hibernate.annotations.BatchSize(size = 32)
 @Entity
 public class Vacancy extends Data {
     @Column(nullable = false)
