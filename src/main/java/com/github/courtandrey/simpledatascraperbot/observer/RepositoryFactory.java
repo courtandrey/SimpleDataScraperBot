@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -22,6 +23,13 @@ public class RepositoryFactory {
     }
 
     public Collection<Data> update(List<Data> data, Long userId) {
-        return vacancyService.addIfEmptyForUser(data, userId);
+        Collection<Data> uniqueData = new HashSet<>();
+        for (Data d:data) {
+            d.setUser(userService.getReferenceById(userId));
+            if (d instanceof Vacancy vacancy) {
+                vacancyService.addIfEmpty(vacancy).ifPresent(uniqueData::add);
+            }
+        }
+        return uniqueData;
     }
 }
