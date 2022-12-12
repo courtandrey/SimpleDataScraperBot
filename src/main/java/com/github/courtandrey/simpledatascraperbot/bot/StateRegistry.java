@@ -6,13 +6,20 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class StateRegistry {
-    private final Map<Long, LinkedList<State>> commands = new HashMap<>();
+    private final Map<Long, LinkedList<State>> commands = new ConcurrentHashMap<>();
+
+    private static final Map<String,DialogType> dialogStrings = new HashMap<>();
+
+    static {
+        dialogStrings.put("/add", DialogType.ADD_REQUEST);
+        dialogStrings.put("/init", DialogType.INIT_SCRAPING);
+        dialogStrings.put("/delete", DialogType.DELETE_REQUEST);
+    }
 
     @Getter
     @Setter
@@ -63,25 +70,15 @@ public class StateRegistry {
     }
 
     private boolean isDialogCommand(String text) {
-        return text.trim().equals("/add") || text.trim().equals("/delete") || text.trim().equals("/init");
+        return dialogStrings.containsKey(text.trim());
     }
 
     private Dialog getDialogFromCommand(String text) {
-        switch (text.trim()) {
-            case "/add" -> {
-                return new Dialog(0, DialogType.ADD_REQUEST);
-            }
-
-            case "/delete" -> {
-                return new Dialog(0, DialogType.DELETE_REQUEST);
-            }
-
-            case "/init" -> {
-                return new Dialog(0, DialogType.INIT_SCRAPING);
-            }
-
-            default -> throw new UnsupportedOperationException("This is not a dialog command");
+        if (dialogStrings.containsKey(text.trim())) {
+            return new Dialog(0, dialogStrings.get(text.trim()));
         }
+
+        throw new UnsupportedOperationException("This is not a dialog command");
     }
 
     public LinkedList<State> getChain(Long chatId) {
