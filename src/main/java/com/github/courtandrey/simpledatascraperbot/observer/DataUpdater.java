@@ -5,19 +5,18 @@ import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import com.github.courtandrey.simpledatascraperbot.service.UserService;
 import com.github.courtandrey.simpledatascraperbot.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-@Service
-public class RepositoryFactory {
+@Component
+public class DataUpdater {
     private final VacancyService vacancyService;
     private final UserService userService;
     @Autowired
-    public RepositoryFactory(VacancyService vacancyService, UserService userService) {
+    public DataUpdater(VacancyService vacancyService, UserService userService) {
         this.userService=userService;
         this.vacancyService = vacancyService;
     }
