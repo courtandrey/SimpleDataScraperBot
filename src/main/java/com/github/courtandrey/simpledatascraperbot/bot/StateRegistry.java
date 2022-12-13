@@ -7,11 +7,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class StateRegistry {
-    private final Map<Long, LinkedList<State>> commands = new ConcurrentHashMap<>();
+    private final Map<Long, LinkedList<State>> commands = new HashMap<>();
 
     private static final Map<String,DialogType> dialogStrings = new HashMap<>();
 
