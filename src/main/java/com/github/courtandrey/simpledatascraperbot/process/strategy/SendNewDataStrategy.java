@@ -33,9 +33,10 @@ public class SendNewDataStrategy implements Strategy {
                 dataMessage.setText(d.toString());
                 dataMessage.setChatId(chatId);
                 absSender.execute(dataMessage);
+                Thread.sleep(1000*2);
             }
             logger.info("Finished circle.");
-        } catch (IOException | TelegramApiException e) {
+        } catch (IOException | TelegramApiException | InterruptedException e) {
             logger.error(e.getLocalizedMessage());
         }
     }
