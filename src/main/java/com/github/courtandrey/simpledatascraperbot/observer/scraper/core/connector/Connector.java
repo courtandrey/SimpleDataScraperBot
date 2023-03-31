@@ -16,17 +16,21 @@ public class Connector {
     }
 
 
-    public Document connect(int pageNum) {
+    public Document connectPageSearch(int pageNum) {
+        String urlWithPage = String.format(url, pageNum);
+        return connect(urlWithPage);
+    }
+
+    public Document connect(String url) {
         Document document = null;
         try {
-            String urlWithPage = String.format(url, pageNum);
             document = Jsoup
-                    .connect(urlWithPage)
+                    .connect(url)
                     .get();
-            logger.info("Fetched " + urlWithPage);
+            logger.info("Fetched " + url);
             Thread.sleep(1000);
         } catch (IOException | InterruptedException e) {
-            logger.error("Connection issues: " + e + " " + String.format(url, pageNum));
+            logger.error("Connection issues: " + e + " " + String.format(url));
         }
         return document;
     }

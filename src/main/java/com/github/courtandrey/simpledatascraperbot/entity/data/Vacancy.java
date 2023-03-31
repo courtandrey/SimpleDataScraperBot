@@ -8,7 +8,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @org.hibernate.annotations.BatchSize(size = 32)
 @Entity
@@ -18,6 +17,12 @@ public class Vacancy extends Data {
     @Column(nullable = false, unique = true, length = 1024)
     private String url;
     private String salary;
+    private String town;
+    private String date;
+    private String company;
+    @Column(length = 65536)
+    @Lob
+    private String text;
 
     @Override
     public boolean equals(Object o) {
@@ -25,6 +30,19 @@ public class Vacancy extends Data {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Vacancy vacancy = (Vacancy) o;
         return getId() != null && Objects.equals(getId(), vacancy.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", salary='" + salary + '\'' +
+                ", town='" + town + '\'' +
+                ", date='" + date + '\'' +
+                ", company='" + company + '\'' +
+                ", text='" + text + '\'' +
+                '}';
     }
 
     @Override

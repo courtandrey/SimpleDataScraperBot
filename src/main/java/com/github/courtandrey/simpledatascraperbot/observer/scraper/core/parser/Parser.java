@@ -5,6 +5,9 @@ import org.jsoup.nodes.Document;
 
 import java.util.List;
 
-public interface Parser {
+public interface Parser<T> {
     List<? extends Data> parse(Document document);
+    default T parseExtra(Document document, T data) {
+        return data;
+    }
 }
