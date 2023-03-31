@@ -39,7 +39,6 @@ public class Vacancy extends Data {
                 ", url='" + url + '\'' +
                 ", salary='" + salary + '\'' +
                 ", town='" + town + '\'' +
-                ", date='" + date + '\'' +
                 ", company='" + company + '\'' +
                 '}';
     }
