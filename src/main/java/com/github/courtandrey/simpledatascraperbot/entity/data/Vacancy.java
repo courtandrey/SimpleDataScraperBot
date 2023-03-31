@@ -34,14 +34,13 @@ public class Vacancy extends Data {
 
     @Override
     public String toString() {
-        return "{" +
+        return "Vacancy{" +
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", salary='" + salary + '\'' +
                 ", town='" + town + '\'' +
                 ", date='" + date + '\'' +
                 ", company='" + company + '\'' +
-                ", text='" + text + '\'' +
                 '}';
     }
 
