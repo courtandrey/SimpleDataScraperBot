@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class HHParser extends VacancyParser{
     @Override
     public List<Vacancy> parse(Document document) {
-        Elements vacancies = document.getElementsByClass("serp-item");
+        Elements vacancies = document.getElementsByAttributeValue("data-qa","vacancy-serp__vacancy vacancy-serp__vacancy_standard");
         List<Vacancy> vcs = new ArrayList<>();
         for (Element vacancy:vacancies) {
             Vacancy vc = new Vacancy();
@@ -37,7 +37,7 @@ public class HHParser extends VacancyParser{
         Elements dates = document.getElementsByClass("vacancy-creation-time-redesigned");
         vacancy.setDate(dates.size() > 0 ? dates.get(0).text() : null);
         Elements texts = document.getElementsByAttributeValue("data-qa", "vacancy-description");
-        vacancy.setText(texts.size() > 0 ? texts.get(0).text().split("опубликована ")[1].split(" в ")[0] : null);
+        vacancy.setText(texts.size() > 0 ? texts.get(0).text() : null);
         return vacancy;
     }
 

@@ -37,7 +37,8 @@ public class HHVacancyRequest extends VacancyRequest {
         NO,
         BETWEEN_1_AND_3,
         BETWEEN_3_AND_6,
-        MORE_THAN_6
+        MORE_THAN_6,
+        DOESNT_MATTER
     }
 
 

@@ -12,7 +12,7 @@ public class URLCreator {
     public String getURL(Request request) {
         StringBuilder starter;
         if (request instanceof  HHVacancyRequest hhVacancyRequest) {
-            starter = new StringBuilder("https://hh.ru/search/vacancy?search_field=name&search_field=company_name&search_field=description&text=${TEXT}&from=suggest_post&page=%d&hhtmFrom=vacancy_search_list");
+            starter = new StringBuilder("https://hh.ru/search/vacancy?search_field=name&search_field=company_name&search_field=description&text=${TEXT}&from=suggest_post&page=%d&hhtmFrom=vacancy_search_list&items_on_page=20");
             if (hhVacancyRequest.getExperience() != null) {
                 switch (hhVacancyRequest.getExperience()) {
                     case NO -> starter.append("&experience=noExperience");

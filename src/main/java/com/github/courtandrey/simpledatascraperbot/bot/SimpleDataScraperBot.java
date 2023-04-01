@@ -246,6 +246,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                 case "2" -> request.setExperience(HHVacancyRequest.Experience.BETWEEN_1_AND_3);
                 case "3" -> request.setExperience(HHVacancyRequest.Experience.BETWEEN_3_AND_6);
                 case "4" -> request.setExperience(HHVacancyRequest.Experience.MORE_THAN_6);
+                case "5" -> request.setExperience(HHVacancyRequest.Experience.DOESNT_MATTER);
             }
 
             Set<Integer> regionInts =
@@ -397,6 +398,7 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
                                 2. Between 1 and 3 years
                                 3. Between 3 and 6 years
                                 4. More than 6 years
+                                5. Doesn't matter
                                 """));
                 return 11;
             }
@@ -406,10 +408,11 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             if (!update.getMessage().getText().equals("1") &&
                     !update.getMessage().getText().equals("2") &&
                     !update.getMessage().getText().equals("3") &&
-                    !update.getMessage().getText().equals("4")) {
+                    !update.getMessage().getText().equals("4") &&
+                    !update.getMessage().getText().equals("5")) {
                 getBot().execute(new SendMessage(
                         String.valueOf(update.getMessage().getChatId()),
-                        "You should type number between 1 and 4"));
+                        "You should type number between 1 and 5"));
                 return -1;
             }
 
