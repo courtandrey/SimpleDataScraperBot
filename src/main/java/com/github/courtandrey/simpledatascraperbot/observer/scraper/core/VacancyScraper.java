@@ -4,7 +4,6 @@ import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.ParsingMode;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.VacancyParser;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connector.Connector;
-import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,33 +20,37 @@ public abstract class VacancyScraper implements Scraper<Vacancy> {
         this.parsingMode = parsingMode;
     }
 
-    protected List<Vacancy> iterateUrls() {
+    protected List<Vacancy> iterateUrls(Integer timeoutMillis) {
         List<Vacancy> vacancies = new ArrayList<>();
         for (String url:urls) {
             connector = new Connector(url);
-            vacancies.addAll(iteratePages());
+            vacancies.addAll(iteratePages(timeoutMillis));
         }
         return vacancies;
     }
 
-    protected List<Vacancy> iteratePages() {
+    protected List<Vacancy> iteratePages(Integer timeoutMillis) {
         int pageNum = startPageNum;
         List<Vacancy> vacancies = new ArrayList<>();
         List<Vacancy> newVacancies;
         do {
-            newVacancies = scrapPage(pageNum);
+            newVacancies = scrapPage(pageNum, timeoutMillis);
             if (newVacancies == null) break;
             ++pageNum;
         } while (vacancies.addAll(newVacancies));
         return vacancies;
     }
 
-    protected List<Vacancy> scrapPage(int pageNum) {
-        Document parsDoc = connector.connectPageSearch(pageNum);
-        if (parsDoc == null) return null;
-        List<Vacancy> vacancies = parser.parse(parsDoc);
+    protected List<Vacancy> scrapPage(int pageNum, Integer timeoutMillis) {
+        String docToParse = connector.connectPageSearch(pageNum,timeoutMillis);
+        if (docToParse == null) return null;
+        List<Vacancy> vacancies = parser.parse(docToParse);
         if (parsingMode == ParsingMode.EXTRA) {
-            vacancies.forEach(v -> parser.parseExtra(connector.connect(v.getUrl()), v));
+            vacancies.forEach(v -> parser.parseExtra(connector.connect(
+                    v.getUrl()
+                    .replace("hh.ru","api.hh.ru")
+                    .replace("vacancy", "vacancies"),
+                    timeoutMillis), v));
         }
         return vacancies;
     }

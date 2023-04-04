@@ -1,6 +1,7 @@
 package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser;
 
 import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -10,7 +11,8 @@ import java.util.List;
 
 public class HabrCareerParser extends VacancyParser {
     @Override
-    public List<Vacancy> parse(Document document) {
+    public List<Vacancy> parse(String docToParse) {
+        Document document = Jsoup.parse(docToParse);
         Elements vacancies = document.getElementsByClass("vacancy-card");
         List<Vacancy> vcs = new ArrayList<>();
         for (Element vacancy:vacancies) {

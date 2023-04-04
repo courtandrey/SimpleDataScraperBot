@@ -1,11 +1,12 @@
 package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connector;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public class Connector {
     private static final Logger logger = LoggerFactory.getLogger(Connector.class);
@@ -16,22 +17,29 @@ public class Connector {
     }
 
 
-    public Document connectPageSearch(int pageNum) {
+    public String connectPageSearch(int pageNum, Integer timeoutMillis) {
         String urlWithPage = String.format(url, pageNum);
-        return connect(urlWithPage);
+        return connect(urlWithPage,timeoutMillis);
     }
 
-    public Document connect(String url) {
-        Document document = null;
+    public String connect(String url, Integer timeoutMillis) {
+        StringBuilder res = new StringBuilder();
         try {
-            document = Jsoup
-                    .connect(url)
-                    .get();
+            URL connectionURL = new URL(url);
+            BufferedReader in = new BufferedReader(new InputStreamReader(connectionURL.openStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                res.append(inputLine);
+            }
+            in.close();
             logger.info("Fetched " + url);
-            Thread.sleep(1000);
+            Thread.sleep(timeoutMillis);
         } catch (IOException | InterruptedException e) {
             logger.error("Connection issues: " + e + " " + String.format(url));
         }
-        return document;
+        if (res.isEmpty()) {
+            logger.error("Connection issues: Empty input" + String.format(url));
+        }
+        return res.toString();
     }
 }

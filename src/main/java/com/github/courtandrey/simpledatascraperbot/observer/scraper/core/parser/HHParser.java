@@ -1,47 +1,69 @@
 package com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser;
 
-import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HHParser extends VacancyParser{
+    private final ObjectMapper mapper = new ObjectMapper();
+    private static final Logger logger = LoggerFactory.getLogger(HHParser.class);
     @Override
-    public List<Vacancy> parse(Document document) {
-        Elements vacancies = document.getElementsByAttributeValue("data-qa","vacancy-serp__vacancy vacancy-serp__vacancy_standard");
-        List<Vacancy> vcs = new ArrayList<>();
-        for (Element vacancy:vacancies) {
-            Vacancy vc = new Vacancy();
-            Elements names = vacancy.getElementsByClass("serp-item__title");
-            vc.setName(names.size() > 0 ? names.get(0).text() : null);
-            vc.setUrl(names.size() > 0 ? unifyURL(names.get(0).attr("href")) : null);
-            Elements salaries = vacancy.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-compensation");
-            vc.setSalary(salaries.size() > 0 ? salaries.get(0).text() : null);
-            Elements towns = vacancy.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-address");
-            vc.setTown(towns.size() > 0 ? towns.get(0).text() : null);
-            Elements company = vacancy.getElementsByAttributeValue("data-qa", "vacancy-serp__vacancy-employer");
-            vc.setCompany(company.size() > 0 ? company.get(0).text() : null);
-            vcs.add(vc);
+    @SuppressWarnings(value = "all")
+    public List<Vacancy> parse(String docToParse) {
+        try {
+            HashMap<String, Object> map = mapper.readValue(docToParse, HashMap.class);
+            List<HashMap<String, Object>> vacancies = (List<HashMap<String, Object>>) map.get("items");
+            List<Vacancy> vcs = new ArrayList<>();
+            for (HashMap<String,Object> vacancy:vacancies) {
+                Vacancy vc = new Vacancy();
+                vc.setName((String) vacancy.get("name"));
+                vc.setUrl((String) vacancy.get("alternate_url"));
+                HashMap<String,Object> salary = (HashMap<String, Object>) vacancy.get("salary");
+                vc.setSalary(getSalaryString(salary));
+                HashMap<String,Object> area = (HashMap<String, Object>) vacancy.get("area");
+                vc.setTown((String) area.get("name"));
+                HashMap<String,Object> employer = (HashMap<String, Object>) vacancy.get("employer");
+                vc.setCompany((String) employer.get("name"));
+                vc.setDate(((String) vacancy.get("published_at")).split("T")[0]);
+                vcs.add(vc);
+            }
+            return vcs;
+        } catch (JsonProcessingException e) {
+            logger.error("JSON malformed: " + e.getLocalizedMessage());
+            return new ArrayList<>();
         }
-        return vcs;
+    }
+
+    private String getSalaryString(HashMap<String,Object> salary) {
+        if (salary == null) return null;
+        StringBuilder builder = new StringBuilder();
+        if (salary.get("from") != null) {
+            builder.append("from ").append(salary.get("from"));
+        }
+        if (salary.get("to") != null) {
+            builder.append(" to ").append(salary.get("to"));
+        }
+        builder.append(" ").append(salary.get("currency"));
+        return builder.toString();
     }
 
     @Override
-    public Vacancy parseExtra(Document document, Vacancy vacancy) {
-        Elements dates = document.getElementsByClass("vacancy-creation-time-redesigned");
-        vacancy.setDate(dates.size() > 0 ? dates.get(0).text() : null);
-        Elements texts = document.getElementsByAttributeValue("data-qa", "vacancy-description");
-        vacancy.setText(texts.size() > 0 ? texts.get(0).text() : null);
+    @SuppressWarnings(value = "all")
+    public Vacancy parseExtra(String docToParse, Vacancy vacancy) {
+        try {
+            HashMap<String,Object> map = mapper.readValue(docToParse, HashMap.class);
+            vacancy.setText((String) map.get("description"));
+        }
+        catch (JsonProcessingException e) {
+            logger.error("JSON malformed: " + e.getLocalizedMessage());
+            return vacancy;
+        }
         return vacancy;
-    }
-
-    private String unifyURL(String href) {
-        return href.split("\\?")[0];
     }
 }

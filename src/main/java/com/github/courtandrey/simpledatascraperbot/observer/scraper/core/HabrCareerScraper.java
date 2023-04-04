@@ -19,7 +19,7 @@ public class HabrCareerScraper extends VacancyScraper {
     @Override
     public List<Vacancy> scrap(List<String> urls) {
         this.urls = new ArrayList<>(urls);
-        return iterateUrls();
+        return iterateUrls(0);
     }
 
     @Override
