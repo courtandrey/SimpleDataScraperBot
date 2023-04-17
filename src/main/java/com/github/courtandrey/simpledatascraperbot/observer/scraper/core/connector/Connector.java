@@ -35,10 +35,10 @@ public class Connector {
             logger.info("Fetched " + url);
             Thread.sleep(timeoutMillis);
         } catch (IOException | InterruptedException e) {
-            logger.error("Connection issues: " + e + " " + String.format(url));
+            logger.error("Connection issues: " + e + " " + url);
         }
         if (res.isEmpty()) {
-            logger.error("Connection issues: Empty input" + String.format(url));
+            logger.error("Connection issues: Empty input" + url);
         }
         return res.toString();
     }
