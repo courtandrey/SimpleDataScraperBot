@@ -4,6 +4,7 @@ import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 
 @Setter
 @Getter
@@ -15,5 +16,6 @@ public abstract class Data {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @Lazy
     private User user;
 }

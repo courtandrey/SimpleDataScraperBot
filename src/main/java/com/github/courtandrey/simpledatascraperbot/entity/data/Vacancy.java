@@ -29,7 +29,7 @@ public class Vacancy extends Data {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Vacancy vacancy = (Vacancy) o;
-        return getId() != null && Objects.equals(getId(), vacancy.getId());
+        return getUrl() != null && Objects.equals(getUrl(), vacancy.getUrl());
     }
 
     @Override

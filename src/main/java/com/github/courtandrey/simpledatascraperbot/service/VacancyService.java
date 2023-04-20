@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,17 +17,14 @@ public class VacancyService {
         this.repository = repository;
     }
     @Transactional
-    public Optional<Vacancy> findByUrl(String url) {
-        return repository.findByUrl(url);
-    }
-    @Transactional
     public Vacancy save(Vacancy vacancy) {
         return repository.save(vacancy);
     }
     @Transactional
-    public Optional<Vacancy> addIfEmpty(Vacancy vacancy) {
-        if (repository.findByUrl(vacancy.getUrl()).isEmpty()) {
-            return Optional.of(repository.save(vacancy));
+    public Optional<List<Vacancy>> getVacanciesWithUrlsContainingIn(List<String> urls) {
+        List<Vacancy> vacancy;
+        if (!(vacancy = repository.getVacanciesWithUrlsContainingIn(urls)).isEmpty()) {
+            return Optional.of(vacancy);
         }
         return Optional.empty();
     }
