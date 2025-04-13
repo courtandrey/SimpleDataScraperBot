@@ -13,9 +13,10 @@ import java.util.List;
 public class HHParser extends VacancyParser{
     private final ObjectMapper mapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(HHParser.class);
+
     @Override
     @SuppressWarnings(value = "all")
-    public List<Vacancy> parse(String docToParse) {
+    public List<Vacancy> parsePage(String docToParse) {
         try {
             HashMap<String, Object> map = mapper.readValue(docToParse, HashMap.class);
             List<HashMap<String, Object>> vacancies = (List<HashMap<String, Object>>) map.get("items");
@@ -55,15 +56,13 @@ public class HHParser extends VacancyParser{
 
     @Override
     @SuppressWarnings(value = "all")
-    public Vacancy parseExtra(String docToParse, Vacancy vacancy) {
+    public void addDetails(String docToParse, Vacancy vacancy) {
         try {
             HashMap<String,Object> map = mapper.readValue(docToParse, HashMap.class);
             vacancy.setText((String) map.get("description"));
         }
         catch (JsonProcessingException e) {
             logger.error("JSON malformed: " + e.getLocalizedMessage());
-            return vacancy;
         }
-        return vacancy;
     }
 }

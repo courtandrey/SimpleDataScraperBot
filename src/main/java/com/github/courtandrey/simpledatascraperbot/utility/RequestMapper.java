@@ -1,6 +1,6 @@
 package com.github.courtandrey.simpledatascraperbot.utility;
 
-import com.github.courtandrey.simpledatascraperbot.entity.request.Region;
+import com.github.courtandrey.simpledatascraperbot.entity.request.vacancy.Region;
 import com.github.courtandrey.simpledatascraperbot.exception.RequestMappingException;
 import lombok.experimental.UtilityClass;
 

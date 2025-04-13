@@ -1,14 +1,15 @@
 package com.github.courtandrey.simpledatascraperbot.observer;
 
-import com.github.courtandrey.simpledatascraperbot.entity.request.HHVacancyRequest;
-import com.github.courtandrey.simpledatascraperbot.entity.request.HabrCareerVacancyRequest;
-import com.github.courtandrey.simpledatascraperbot.entity.request.Region;
+import com.github.courtandrey.simpledatascraperbot.entity.request.vacancy.HHVacancyRequest;
+import com.github.courtandrey.simpledatascraperbot.entity.request.vacancy.HabrCareerVacancyRequest;
+import com.github.courtandrey.simpledatascraperbot.entity.request.vacancy.Region;
 import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
 import com.github.courtandrey.simpledatascraperbot.utility.RequestMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class URLCreator {
+
     public String getURL(Request request) {
         StringBuilder starter;
         if (request instanceof  HHVacancyRequest hhVacancyRequest) {

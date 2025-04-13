@@ -6,7 +6,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Optional;
 
@@ -45,7 +44,6 @@ public class UserService {
         if (userRepository.findByUserId(user.getId()).isEmpty()) {
             return Optional.of(userRepository.save(new User(user)));
         }
-
         return Optional.empty();
     }
 

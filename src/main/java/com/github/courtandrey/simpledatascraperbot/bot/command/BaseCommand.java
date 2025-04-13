@@ -8,12 +8,15 @@ import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 public abstract class BaseCommand implements IBotCommand {
     @Autowired
     protected ProcessManager processManager;
     protected static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
+
     final String identifier;
     final String description;
+
     public BaseCommand(String identifier, String description) {
         this.identifier = identifier;
         this.description = description;
@@ -31,6 +34,20 @@ public abstract class BaseCommand implements IBotCommand {
 
 
     void sendAnswer(AbsSender absSender, String text, Long chatId) {
+        int buffer = 1500;
+        int chunk = 1;
+
+        while (text.length() >= chunk * buffer) {
+            sendMessage(absSender, text.substring((chunk - 1) * buffer, buffer * chunk), chatId);
+            chunk += 1;
+        }
+
+        if (chunk * buffer != text.length()) {
+            sendMessage(absSender, text.substring((chunk - 1) * buffer), chatId);
+        }
+    }
+
+    private void sendMessage(AbsSender absSender, String text, Long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         try {

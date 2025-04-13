@@ -5,8 +5,8 @@ import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import java.util.List;
 
 public interface Parser<T> {
-    List<? extends Data> parse(String docToParse);
-    default T parseExtra(String docToParse, T data) {
-        return data;
-    }
+
+    List<? extends Data> parsePage(String docToParse);
+
+    default void addDetails(String docToParse, T data) {}
 }

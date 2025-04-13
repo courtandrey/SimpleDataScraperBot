@@ -16,6 +16,9 @@ public class AddRequestCommand extends BaseCommand{
                             Choose one of avalable scrapers:
                             1. HeadHunter
                             2. HabrCareer
+                            3. NLHousing
+                            4. Latvijas Pasts
+                            5. IMDB movie
                             """,
                 message.getChatId()
         );

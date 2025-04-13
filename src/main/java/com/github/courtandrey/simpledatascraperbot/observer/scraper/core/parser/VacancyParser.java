@@ -7,5 +7,5 @@ import java.util.List;
 public abstract class VacancyParser implements Parser<Vacancy>{
 
     @Override
-    public abstract List<Vacancy> parse(String docToParse);
+    public abstract List<Vacancy> parsePage(String docToParse);
 }

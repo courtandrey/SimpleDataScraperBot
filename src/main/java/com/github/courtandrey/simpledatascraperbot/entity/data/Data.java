@@ -1,10 +1,13 @@
 package com.github.courtandrey.simpledatascraperbot.entity.data;
 
-import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
+import com.github.courtandrey.simpledatascraperbot.entity.request.HibernateInitIgnore;
+import com.github.courtandrey.simpledatascraperbot.entity.request.RequestToData;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -14,8 +17,11 @@ public abstract class Data {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @Lazy
-    private User user;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true, mappedBy = "data")
+    @HibernateInitIgnore
+    @Getter
+    private Set<RequestToData> requestToData = new HashSet<>();
 }

@@ -2,7 +2,6 @@ package com.github.courtandrey.simpledatascraperbot.entity.data;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
@@ -25,14 +24,6 @@ public class Vacancy extends Data {
     private String text;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Vacancy vacancy = (Vacancy) o;
-        return getUrl() != null && Objects.equals(getUrl(), vacancy.getUrl());
-    }
-
-    @Override
     public String toString() {
         return "Vacancy{" +
                 "name='" + name + '\'' +
@@ -44,7 +35,14 @@ public class Vacancy extends Data {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Vacancy vacancy = (Vacancy) o;
+        return Objects.equals(url, vacancy.url);
+    }
+
+    @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(url);
     }
 }

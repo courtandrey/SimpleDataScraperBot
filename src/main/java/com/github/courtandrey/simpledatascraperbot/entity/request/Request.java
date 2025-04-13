@@ -2,6 +2,10 @@ package com.github.courtandrey.simpledatascraperbot.entity.request;
 
 import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -22,6 +26,13 @@ public abstract class Request {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true, mappedBy = "request")
+    @HibernateInitIgnore
+    @Getter
+    private Set<RequestToData> requestToData = new HashSet<>();
 
     public User getUser() {
         return user;

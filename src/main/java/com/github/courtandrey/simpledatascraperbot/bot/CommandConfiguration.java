@@ -18,18 +18,42 @@ public class CommandConfiguration {
     public AddRequestCommand addRequestCommand() {
         return new AddRequestCommand();
     }
+
     @Bean
     public StopCommand stopCommand() {
         return new StopCommand();
     }
+
     @Bean
     public InitScrapingCommand initScrapingCommand() {
         return new InitScrapingCommand();
     }
+
     @Bean
     public ShowRequestsCommand showRequestsCommand() {
         return new ShowRequestsCommand();
     }
+
+    @Bean
+    public ShowAllCommand showAllCommand() {
+        return new ShowAllCommand();
+    }
+
+    @Bean
+    public DeleteAdminCommand deleteAdminCommand() {
+        return new DeleteAdminCommand();
+    }
+
+    @Bean
+    public StopAdminCommand stopAdminCommand() {
+        return new StopAdminCommand();
+    }
+
+    @Bean
+    public ShowAllRunningProcesses showAllRunningProcesses() {
+        return new ShowAllRunningProcesses();
+    }
+
     @Bean
     public DeleteRequestCommand deleteRequestCommand() {
         return new DeleteRequestCommand();
@@ -42,7 +66,11 @@ public class CommandConfiguration {
         baseCommands.add(addRequestCommand());
         baseCommands.add(initScrapingCommand());
         baseCommands.add(showRequestsCommand());
+        baseCommands.add(showAllCommand());
+        baseCommands.add(deleteAdminCommand());
+        baseCommands.add(stopAdminCommand());
         baseCommands.add(deleteRequestCommand());
+        baseCommands.add(showAllRunningProcesses());
         return baseCommands;
     }
 }

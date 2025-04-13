@@ -18,12 +18,14 @@ public class StateRegistry {
         dialogStrings.put("/add", DialogType.ADD_REQUEST);
         dialogStrings.put("/init", DialogType.INIT_SCRAPING);
         dialogStrings.put("/delete", DialogType.DELETE_REQUEST);
+        dialogStrings.put("/deleteAdmin", DialogType.DELETE_REQUEST);
+        dialogStrings.put("/stopAdmin", DialogType.STOP_ADMIN);
     }
 
     @Getter
     @Setter
     @RequiredArgsConstructor
-    static class Dialog{
+    public static class Dialog {
         private final int step;
         private Integer nextStep = null;
         private final DialogType type;
@@ -32,7 +34,8 @@ public class StateRegistry {
     public enum DialogType {
         ADD_REQUEST,
         DELETE_REQUEST,
-        INIT_SCRAPING
+        INIT_SCRAPING,
+        STOP_ADMIN
     }
 
     public record State(Message message, Dialog dialog) {}

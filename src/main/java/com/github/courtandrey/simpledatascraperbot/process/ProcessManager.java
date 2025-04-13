@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class ProcessManager {
     private final Map<Long,List<Process>> processes = new ConcurrentHashMap<>();
+
     @Bean
     @Scope(scopeName = "prototype")
     public CycledProcess cycledProcess(long waitTime, Long chatId, Strategy strategy) {

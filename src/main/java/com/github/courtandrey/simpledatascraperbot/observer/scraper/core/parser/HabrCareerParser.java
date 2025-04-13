@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HabrCareerParser extends VacancyParser {
+
     @Override
-    public List<Vacancy> parse(String docToParse) {
+    public List<Vacancy> parsePage(String docToParse) {
         Document document = Jsoup.parse(docToParse);
         Elements vacancies = document.getElementsByClass("vacancy-card");
         List<Vacancy> vcs = new ArrayList<>();

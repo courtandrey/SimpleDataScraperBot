@@ -1,53 +1,42 @@
 package com.github.courtandrey.simpledatascraperbot.observer;
 
 import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
-import com.github.courtandrey.simpledatascraperbot.entity.data.Vacancy;
-import com.github.courtandrey.simpledatascraperbot.entity.servicedata.User;
-import com.github.courtandrey.simpledatascraperbot.service.UserService;
-import com.github.courtandrey.simpledatascraperbot.service.VacancyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.courtandrey.simpledatascraperbot.entity.request.Request;
+import com.github.courtandrey.simpledatascraperbot.entity.request.RequestToData;
+import com.github.courtandrey.simpledatascraperbot.service.DataCleaner;
+import io.vavr.control.Try;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class DataUpdater {
-    private final VacancyService vacancyService;
-    private final UserService userService;
-    @Autowired
-    public DataUpdater(VacancyService vacancyService, UserService userService) {
-        this.userService=userService;
-        this.vacancyService = vacancyService;
-    }
+    private final DataCleaner cleaner;
+    private final EntityManager entityManager;
+
     @Transactional
-    public Collection<Data> update(List<Data> data, Long userId) {
-        Collection<Data> uniqueData = new HashSet<>();
-        User user = userService.getReferenceById(userId);
-        List<Vacancy> vacancies = new ArrayList<>();
-        for (Data d:data) {
-            d.setUser(user);
-            if (d instanceof Vacancy vacancy) {
-                vacancies.add(vacancy);
-            }
-        }
-        List<String> urls = vacancies.stream().map(Vacancy::getUrl).toList();
-        List<Vacancy> oldVacancies = new ArrayList<>();
-        int batch = 500;
-        for (int start = 0; start < urls.size(); start += batch) {
-            int end = Math.min(start+batch,urls.size());
-            List<String> subUrls = urls.subList(start, end);
-            oldVacancies.addAll(vacancyService.getVacanciesWithUrlsContainingIn(subUrls).orElse(new ArrayList<>()));
-        }
-        for (Vacancy vacancy:vacancies) {
-            if (!oldVacancies.contains(vacancy)) {
-                uniqueData.add(vacancy);
-                vacancyService.save(vacancy);
-            }
-        }
-        return uniqueData;
+    public Collection<Processee<Data>> update(List<Pair<Request, Processee<Data>>> data) {
+        Collection<Pair<Request, Processee<Data>>> uniqueData = cleaner.getUnique(data);
+        uniqueData.parallelStream().peek(pair -> pair.getSecond().callAndReset())
+                .toList()
+                .forEach(pair -> Try.run(() -> persist(pair))
+                        .onFailure(exc -> log.error("Could not persist data {}", pair.getSecond().unwrap(), exc)));
+        return uniqueData.stream().map(Pair::getSecond).toList();
+    }
+
+    @Transactional
+    private void persist(Pair<Request, Processee<Data>> pair) {
+        pair.getSecond().accept(entityManager::persist);
+        RequestToData requestToData = new RequestToData();
+        requestToData.setRequest(pair.getFirst());
+        requestToData.setData(pair.getSecond().unwrap());
+        entityManager.persist(requestToData);
     }
 }

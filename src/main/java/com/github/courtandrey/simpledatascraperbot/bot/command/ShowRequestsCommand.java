@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.Collection;
 
-public class ShowRequestsCommand extends BaseCommand{
+public class ShowRequestsCommand extends BaseCommand {
     @Autowired
     private RequestService requestService;
+
     public ShowRequestsCommand() {
         super("show", "Shows user requests");
     }
@@ -18,7 +19,7 @@ public class ShowRequestsCommand extends BaseCommand{
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] strings) {
         Collection<Request> requests = requestService.findRequestsByUserId(message.getChatId());
-        if (requests.size() == 0) {
+        if (requests.isEmpty()) {
             sendAnswer(
                     absSender,
                     "You don't have registered request. Use /add command to add request",
