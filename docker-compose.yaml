@@ -1,0 +1,37 @@
+---
+services:
+  server:
+    environment:
+      - SDSB_PASSWORD=sdsb
+      - SDSB_USERNAME=sdsb
+      - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_NAME=${BOT_NAME}
+      - SDSB_DBURL=jdbc:mysql://host.docker.internal:3306/simple_data_storage
+    build:
+      context: .
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mysql:8.0
+    container_name: my-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: simple_data_storage
+      MYSQL_USER: sdsb
+      MYSQL_PASSWORD: sdsb
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
