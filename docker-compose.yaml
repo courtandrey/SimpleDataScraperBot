@@ -1,6 +1,7 @@
 ---
 services:
   server:
+    image: registry.gitlab.com/courtandrey/simpledatascraperbot:master
     environment:
       - SDSB_PASSWORD=sdsb
       - SDSB_USERNAME=sdsb
