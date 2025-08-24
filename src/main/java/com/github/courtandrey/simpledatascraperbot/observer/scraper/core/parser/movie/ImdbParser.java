@@ -48,4 +48,11 @@ public class ImdbParser {
                 .onFailure(exc -> log.error("Could not get endCursor token!", exc))
                 .getOrElse(Optional::empty);
     }
+
+    public boolean hasNextPage(String docToParse) {
+        return Try.of(() -> MAPPER.readValue(docToParse, JsonNode.class))
+                .mapTry(node -> node.get("data").get("advancedTitleSearch").get("pageInfo").get("hasNextPage").asBoolean())
+                .onFailure(exc -> log.error("Could not get endCursor token!", exc))
+                .getOrElse(false);
+    }
 }

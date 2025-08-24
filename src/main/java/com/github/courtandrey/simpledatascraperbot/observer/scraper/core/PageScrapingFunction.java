@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -31,6 +28,8 @@ public class PageScrapingFunction<T,R extends Request> implements Function<List<
     private int startingPage = 1;
     private boolean sameOutputForAllRequests = false;
     private boolean reqsInParallel = false;
+    private Function<R, IConnector> fallbackConnector = null;
+    private Predicate<String> responsePredicate = response -> false;
 
     public PageScrapingFunction<T,R> withReqDataPostProcessing(BiConsumer<T,R> dataReqPostProcessing) {
         this.dataReqPostProcessing = this.dataReqPostProcessing.andThen(dataReqPostProcessing);
@@ -77,6 +76,16 @@ public class PageScrapingFunction<T,R extends Request> implements Function<List<
         return this;
     }
 
+    public PageScrapingFunction<T,R> withFallbackConnector(Function<R, IConnector> fallbackConnector) {
+        this.fallbackConnector = fallbackConnector;
+        return this;
+    }
+
+    public PageScrapingFunction<T,R> withStopPaginationPredicate(Predicate<String> responsePredicate) {
+        this.responsePredicate = responsePredicate;
+        return this;
+    }
+
     @Override
     public List<Pair<Request, Processee<T>>> apply(List<Request> reqs) {
         List<Pair<Request, Processee<T>>> allData = reqsInParallel ? new CopyOnWriteArrayList<>() : new ArrayList<>();
@@ -93,15 +102,26 @@ public class PageScrapingFunction<T,R extends Request> implements Function<List<
             int currentSize;
             Set<T> reqData = new HashSet<>();
             String previousPage = null;
+            boolean fallbackInUse = false;
             do {
                 prevSize = reqData.size();
                 RequestPagingContext context = RequestPagingContext.builder().currentPage(pageNum).previousResponse(previousPage).build();
                 String page = singlePage ? connector.connect(0) : connector.connectPageSearch(context, 0);
+                if (responsePredicate.test(page)) {
+                    break;
+                }
                 previousPage = page;
                 List<T> data = pageParsing.apply(page).stream().peek(dt -> dataPostProcessing.accept(dt)).toList();
                 reqData.addAll(data);
                 currentSize = reqData.size();
                 pageNum += 1;
+                if (prevSize == currentSize && prevSize == 0 && fallbackConnector != null && !fallbackInUse) {
+                    connector = fallbackConnector.apply(req);
+                    pageNum = startingPage;
+                    previousPage = null;
+                    fallbackInUse = true;
+                    prevSize = -1;
+                }
             } while (prevSize != currentSize && !singlePage);
 
             if (sameOutputForAllRequests) {
