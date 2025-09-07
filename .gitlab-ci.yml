@@ -3,10 +3,12 @@ stages:
   - test
   - package
   - docker
+  - deploy
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
@@ -21,9 +23,6 @@ build:
   image: maven:3.9.6-eclipse-temurin-21
   script:
     - ./mvnw $MAVEN_CLI_OPTS clean compile
-  only:
-    - merge_requests
-    - master
 
 test:
   stage: test
@@ -43,8 +42,6 @@ package:
     paths:
       - target/*.jar
     expire_in: 1 week
-  only:
-    - master
 
 docker-build:
   stage: docker
@@ -58,5 +55,28 @@ docker-build:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker buildx build --load -t $DOCKER_IMAGE .
     - docker push $DOCKER_IMAGE
-  only:
-    - master
+
+deploy:
+  stage: deploy
+  when: manual
+  before_script:
+    # Setup SSH key
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - apt-get update -y && apt-get install -y openssh-client
+    # start ssh-agent and add key with passphrase
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PASSPHRASE" | SSH_ASKPASS=/bin/cat DISPLAY= ssh-add ~/.ssh/id_ed25519
+
+  script:
+    - scp -P $DEPLOY_SSH_PORT docker-compose.yaml $DEPLOY_USER@$DEPLOY_HOST:/home/$DEPLOY_USER/docker-compose.yaml
+    - ssh -p "$DEPLOY_SSH_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "
+        echo BOT_TOKEN=$BOT_TOKEN > /home/$DEPLOY_USER/.env &&
+        echo BOT_NAME=$BOT_NAME >> /home/$DEPLOY_USER/.env
+      "
+    - ssh -p "$DEPLOY_SSH_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "
+        docker compose --env-file /home/$DEPLOY_USER/.env -f /home/$DEPLOY_USER/docker-compose.yaml pull &&
+        docker compose --env-file /home/$DEPLOY_USER/.env -f /home/$DEPLOY_USER/docker-compose.yaml up -d
+      "
