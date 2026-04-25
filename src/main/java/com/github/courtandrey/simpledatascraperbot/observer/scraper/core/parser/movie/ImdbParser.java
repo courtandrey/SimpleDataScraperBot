@@ -26,19 +26,29 @@ public class ImdbParser {
     private Function<JsonNode, List<Movie>> parseMovies() {
         return node -> {
             List<Movie> movies = new ArrayList<>();
-
-            for (JsonNode child : node) {
-                Movie movie = new Movie();
-                movie.setName(child.get("node").get("title").get("originalTitleText").get("text").asText());
-                movie.setDuration(child.get("node").get("title").get("runtime").get("seconds").asInt() / 60 + " mins");
-                movie.setUrl("https://www.imdb.com/title/" + child.get("node").get("title").get("id").asText() + "/");
-                movie.setReleaseYear(child.get("node").get("title").get("releaseYear").get("year").asText());
-                movie.setRating(child.get("node").get("title").get("ratingsSummary").get("aggregateRating").asText());
-                movies.add(movie);
-            }
-
+            node.iterator()
+                    .forEachRemaining(child ->
+                            Try.of(() -> processNode(child))
+                                    .onFailure(exc -> log.error("Could not parse movies from imdb! node {}", child, exc))
+                                    .map(movies::add)
+                    );
             return movies;
         };
+    }
+
+    private Movie processNode(JsonNode node) {
+        Movie movie = new Movie();
+        movie.setName(node.get("node").get("title").get("originalTitleText").get("text").asText());
+        movie.setDuration(getDuration(node));
+        movie.setUrl("https://www.imdb.com/title/" + node.get("node").get("title").get("id").asText() + "/");
+        movie.setReleaseYear(node.get("node").get("title").get("releaseYear").get("year").asText());
+        movie.setRating(node.get("node").get("title").get("ratingsSummary").get("aggregateRating").asText());
+        return movie;
+    }
+
+    private String getDuration(JsonNode node) {
+        return Try.of(() -> node.get("node").get("title").get("runtime").get("seconds").asInt() / 60 + " mins")
+                .getOrElse(() -> null);
     }
 
     public Optional<String> getAfterToken(String docToParse) {
