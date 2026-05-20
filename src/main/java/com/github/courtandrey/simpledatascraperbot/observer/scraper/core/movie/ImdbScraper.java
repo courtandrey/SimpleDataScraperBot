@@ -129,7 +129,7 @@ public class ImdbScraper implements Scraper<Movie> {
                 "total\\n  }\\n  keywords: facet(facetField: KEYWORDS, limit: 100) {\\n    filterId\\n    text\\n    total\\n  }\\n  titleTypes: facet(facetField: TITLE_TYPE, limit: 25) {\\n    filterId\\n    text\\n    total\\n  }\\n  jobCategories: " +
                 "facet(facetField: NAME_JOB_CATEGORIES) {\\n    filterId\\n    text\\n    total\\n  }\\n}\",\"operationName\":\"AdvancedTitleSearch\",\"variables\":{\"locale\":\"en-US\",$PAGE\"first\":50,\"sortBy\":\"POPULARITY\",\"sortOrder\":\"ASC\"," +
                 "\"titleTypeConstraint\":{\"anyTitleTypeIds\":[\"movie\"]},$START_DATE_PART$MIN_VOTES_PART$GENRE_PART$COUNTRY_PART" +
-                "},\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"81b46290a78cc1e8b3d713e6a43c191c55b4dccf3e1945d6b46668945846d832\"}}}";
+                "},\"extensions\":{\"persistedQuery\":{\"version\":1,\"sha256Hash\":\"0a6de8896f4199e62945d43355755eb9ee4155d6b0d7923b0018d7068e33ccb7\"}}}";
 
         String startDateTemplate = "\"releaseDateConstraint\":{\"releaseDateRange\":{\"start\":\"%s\"}},";
         String minVotesTemplate = "\"userRatingsConstraint\":{\"ratingsCountRange\":{\"min\":%d}},";
@@ -152,7 +152,7 @@ public class ImdbScraper implements Scraper<Movie> {
                 "%22sortOrder%22%3A%22ASC%22%2C%22titleTypeConstraint%22%3A%7B" +
                 "%22anyTitleTypeIds%22%3A%5B%22movie%22%5D%2C%22excludeTitleTypeIds%22%3A%5B%5D%7D%2C" +
                 "%22userRatingsConstraint%22%3A%7B%22ratingsCountRange%22%3A%7B%22min%22%3A$COUNT%7D%7D%7D" +
-                "&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%2281b46290a78cc1e8b3d713e6a43c191c55b4dccf3e1945d6b46668945846d832%22%2C" +
+                "&extensions=%7B%22persistedQuery%22%3A%7B%22sha256Hash%22%3A%220a6de8896f4199e62945d43355755eb9ee4155d6b0d7923b0018d7068e33ccb7%22%2C" +
                 "%22version%22%3A1%7D%7D";
 
         template = template.replace("$GENRE", ofNullable(request.getGenre()).map(gen -> "%22" + gen + "%22").orElse(""));
