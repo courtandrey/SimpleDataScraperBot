@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connector.ConnectionUtil.getAllCookies;
 import static java.util.Optional.ofNullable;
@@ -39,7 +40,7 @@ public class ImdbScraper implements Scraper<Movie> {
        )
                .withFallbackConnector(getPostConnector())
                .withReqDataPostProcessing((movie, req) -> movie.setCountry(req.getCountry()))
-               .withStopPaginationPredicate(parser::hasNextPage)
+               .withStopPaginationPredicate(Predicate.not(parser::hasNextPage))
                .apply(reqs);
     }
 

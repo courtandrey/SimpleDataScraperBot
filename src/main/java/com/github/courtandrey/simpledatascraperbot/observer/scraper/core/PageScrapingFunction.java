@@ -107,9 +107,6 @@ public class PageScrapingFunction<T,R extends Request> implements Function<List<
                 prevSize = reqData.size();
                 RequestPagingContext context = RequestPagingContext.builder().currentPage(pageNum).previousResponse(previousPage).build();
                 String page = singlePage ? connector.connect(0) : connector.connectPageSearch(context, 0);
-                if (responsePredicate.test(page)) {
-                    break;
-                }
                 previousPage = page;
                 List<T> data = pageParsing.apply(page).stream().peek(dt -> dataPostProcessing.accept(dt)).toList();
                 reqData.addAll(data);
@@ -121,6 +118,9 @@ public class PageScrapingFunction<T,R extends Request> implements Function<List<
                     previousPage = null;
                     fallbackInUse = true;
                     prevSize = -1;
+                }
+                if (responsePredicate.test(page)) {
+                    break;
                 }
             } while (prevSize != currentSize && !singlePage);
 
