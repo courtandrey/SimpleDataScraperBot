@@ -1,0 +1,6 @@
+apiVersion: v2
+name: simpledatascraperbot
+description: A Telegram data-scraper bot (Spring Boot) with an optional in-cluster MySQL.
+type: application
+version: 0.1.0
+appVersion: "master"

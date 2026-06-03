@@ -1,0 +1,25 @@
+---
+spring:
+  profiles:
+    active: prod
+  graphql:
+    introspection:
+      enabled: true
+    path: /graphql
+    graphiql:
+      enabled: true
+    schema:
+      printer:
+        enabled: true
+    websocket:
+      path: /graphql
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

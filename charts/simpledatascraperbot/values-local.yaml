@@ -1,0 +1,9 @@
+mysql:
+  enabled: true
+
+app:
+  bot:
+    name: "SimpleDataScraperBot"
+    token: "PUT-YOUR-TELEGRAM-TOKEN-HERE"
+  db:
+    password: "sdsb"

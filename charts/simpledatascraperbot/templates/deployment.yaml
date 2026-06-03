@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sdsb.fullname" . }}
+  labels:
+    {{- include "sdsb.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "sdsb.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: bot
+  template:
+    metadata:
+      labels:
+        {{- include "sdsb.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: bot
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "sdsb.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: bot
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: SDSB_DBURL
+              value: {{ include "sdsb.jdbcUrl" . | quote }}
+            - name: SDSB_USERNAME
+              valueFrom: { secretKeyRef: { name: {{ include "sdsb.fullname" . }}, key: SDSB_USERNAME } }
+            - name: SDSB_PASSWORD
+              valueFrom: { secretKeyRef: { name: {{ include "sdsb.fullname" . }}, key: SDSB_PASSWORD } }
+            - name: BOT_TOKEN
+              valueFrom: { secretKeyRef: { name: {{ include "sdsb.fullname" . }}, key: BOT_TOKEN } }
+            - name: BOT_NAME
+              valueFrom: { secretKeyRef: { name: {{ include "sdsb.fullname" . }}, key: BOT_NAME } }
+          {{- if .Values.app.actuator.enabled }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.actuator.port }}
+          startupProbe:
+            httpGet: { path: /actuator/health/readiness, port: http }
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: http }
+            periodSeconds: 15
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

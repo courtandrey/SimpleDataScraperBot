@@ -60,13 +60,11 @@ deploy:
   stage: deploy
   when: manual
   before_script:
-    # Setup SSH key
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - apt-get update -y && apt-get install -y openssh-client
-    # start ssh-agent and add key with passphrase
     - eval $(ssh-agent -s)
     - echo "$SSH_PASSPHRASE" | SSH_ASKPASS=/bin/cat DISPLAY= ssh-add ~/.ssh/id_ed25519
 

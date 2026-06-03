@@ -1,0 +1,11 @@
+---
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/simple_data_storage_test
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        ddl-auto: create-drop

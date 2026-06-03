@@ -31,7 +31,6 @@ public class DataUpdater {
         return uniqueData.stream().map(Pair::getSecond).toList();
     }
 
-    @Transactional
     private void persist(Pair<Request, Processee<Data>> pair) {
         pair.getSecond().accept(entityManager::persist);
         RequestToData requestToData = new RequestToData();

@@ -1,0 +1,67 @@
+replicaCount: 1
+
+image:
+  repository: registry.gitlab.com/courtandrey/simpledatascraperbot
+  tag: "migration-aws"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: gitlab-registry
+
+app:
+  bot:
+    name: ""
+    token: ""
+  db:
+    username: "sdsb"
+    password: "sdsb"
+    database: "simple_data_storage"
+  actuator:
+    enabled: true
+    port: 8080
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+
+mysql:
+  enabled: true
+  image: "mysql:8.0"
+  rootPassword: "rootpassword"
+  storage:
+    size: 1Gi
+    storageClassName: ""
+  resources:
+    requests: { cpu: "100m", memory: "256Mi" }
+    limits:   { memory: "512Mi" }
+
+externalDatabase:
+  host: ""
+  port: 3306
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+resources:
+  requests: { cpu: "250m", memory: "512Mi" }
+  limits:   { memory: "768Mi" }
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

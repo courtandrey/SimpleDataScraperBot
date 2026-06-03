@@ -50,8 +50,8 @@ public class CommandConfiguration {
     }
 
     @Bean
-    public ShowAllRunningProcesses showAllRunningProcesses() {
-        return new ShowAllRunningProcesses();
+    public ShowAllRunningProcessesCommand showAllRunningProcesses() {
+        return new ShowAllRunningProcessesCommand();
     }
 
     @Bean

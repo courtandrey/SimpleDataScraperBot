@@ -1,0 +1,11 @@
+region   = "eu-north-1"
+name     = "sdsb"
+az_count = 3
+kubernetes_version = "1.33"
+admin_cidr = "0.0.0.0/00"
+
+bot_name        = "botName"
+gitlab_username = "user@gmail.com"
+
+# bot_token    = "..."
+# gitlab_token = "..."

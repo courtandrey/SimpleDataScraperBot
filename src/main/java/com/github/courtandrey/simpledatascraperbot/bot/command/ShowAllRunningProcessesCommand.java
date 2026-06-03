@@ -14,11 +14,11 @@ import java.util.Set;
 import static com.github.courtandrey.simpledatascraperbot.bot.TextMessages.UNKNOWN_REQUEST;
 
 @Slf4j
-public class ShowAllRunningProcesses extends BaseCommand {
+public class ShowAllRunningProcessesCommand extends BaseCommand {
     @Autowired
     private UserService userService;
 
-    public ShowAllRunningProcesses() {
+    public ShowAllRunningProcessesCommand() {
         super("showAllProcesses", "Shows all runningProcesses");
     }
 

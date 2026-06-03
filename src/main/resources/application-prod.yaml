@@ -1,0 +1,13 @@
+---
+spring:
+  datasource:
+    url: ${SDSB_DBURL}
+    username: ${SDSB_USERNAME}
+    password: ${SDSB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+app:
+  vacancy:
+    parsing-mode: main

@@ -1,0 +1,5 @@
+Reminder: this release needs the private registry pull secret to exist first:
+  kubectl -n {{ .Release.Namespace }} create secret docker-registry gitlab-registry \
+    --docker-server=registry.gitlab.com \
+    --docker-username=<gitlab-user> \
+    --docker-password=<gitlab-token>

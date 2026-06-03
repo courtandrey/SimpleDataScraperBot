@@ -1,0 +1,165 @@
+scalar DateTime
+
+type Query {
+  auditLog(id: ID!): AuditLog
+
+  auditLogs(filter: AuditLogFilter, page: Int = 0, size: Int = 20): AuditLogPage!
+
+  user(id: ID!): AuditUser
+
+  movie(id: ID!): Movie
+
+  movies(
+    filter: MovieFilter
+    orderBy: [MovieOrder!]
+    first: Int, after: String
+    last: Int,  before: String
+  ): MovieConnection!
+}
+
+type Subscription {
+  auditLogAdded: AuditLog!
+}
+
+type AuditLog {
+  id: ID!
+  userId: ID!
+  commandName: CommandName!
+  timestamp: DateTime!
+  user: AuditUser!
+}
+
+type AuditUser {
+  id: ID!
+  totalCommands: Int!
+  lastSeen: DateTime
+  auditLogs(page: Int = 0, size: Int = 20): AuditLogPage!
+}
+
+type AuditLogPage {
+  content: [AuditLog!]!
+  totalElements: Int!
+  totalPages: Int!
+  page: Int!
+  size: Int!
+}
+
+input AuditLogFilter {
+  userId: ID
+  commandName: CommandName
+  from: DateTime
+  to: DateTime
+}
+
+enum CommandName {
+  ADD
+  DELETE_ADMIN
+  DELETE
+  INIT
+  SHOW_ALL
+  SHOW_ALL_PROCESSES
+  SHOW
+  START
+  STOP_ADMIN
+  STOP
+}
+
+
+interface Data {
+  id: ID!
+}
+
+type Movie implements Data {
+  id: ID!
+  name: String!
+  url: String!
+  country: String
+  duration: String
+  rating: String
+  releaseYear: String
+  requests: [Request!]!
+}
+
+interface Request {
+  id: ID!
+  user: User
+}
+
+type IMDBRequest implements Request {
+  id: ID!
+  user: User
+  country: String
+  genre: String
+  minVotes: Int!
+  releaseDate: Date
+}
+
+type User {
+  userId: ID!
+  firstName: String
+  lastName: String
+  username: String
+  isAdmin: Boolean!
+  requests: [Request!]!
+}
+
+scalar Date
+
+type MovieConnection {
+  edges: [MovieEdge!]!
+  pageInfo: PageInfo!
+}
+type MovieEdge {
+  cursor: String!
+  node: Movie!
+}
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+input StringFilter {
+  eq: String
+  ne: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  in: [String!]
+  isNull: Boolean
+}
+
+input IntFilter {
+  eq: Int
+  ne: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  in: [Int!]
+}
+
+input MovieFilter {
+  name: StringFilter
+  country: StringFilter
+  rating: StringFilter
+  releaseYear: StringFilter
+  duration: StringFilter
+
+  requestedByUserId: ID
+  genre: StringFilter
+  minVotes: IntFilter
+
+  and: [MovieFilter!]
+  or: [MovieFilter!]
+  not: MovieFilter
+}
+
+input MovieOrder {
+  field: MovieSortField!
+  direction: SortDirection! = ASC
+}
+
+enum MovieSortField { NAME COUNTRY RATING RELEASE_YEAR DURATION ID }
+enum SortDirection { ASC DESC }
