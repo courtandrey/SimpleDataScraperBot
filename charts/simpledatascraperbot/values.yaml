@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: registry.gitlab.com/courtandrey/simpledatascraperbot
-  tag: "migration-aws"
+  tag: "master"
   pullPolicy: Always
 
 imagePullSecrets:
