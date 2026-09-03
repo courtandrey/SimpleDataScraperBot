@@ -211,6 +211,8 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
 
                 case 5 -> transformation = new ImdbRequestFunction();
 
+                case 6 -> transformation = new NLJobRequestFunction();
+
                 default -> throw new UnsupportedOperationException("Unknown request type");
             }
 

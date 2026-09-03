@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +31,8 @@ public class NLHousingRequest extends Request {
     @ElementCollection(fetch = FetchType.LAZY)
     @JoinTable(name = "nlhousing_request_site")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(length = 64)
     @org.hibernate.annotations.Fetch(
             org.hibernate.annotations.FetchMode.SUBSELECT
     )

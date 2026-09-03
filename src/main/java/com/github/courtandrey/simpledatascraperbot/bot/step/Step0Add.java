@@ -45,6 +45,13 @@ public class Step0Add implements StepFunction {
                            """);
         }
 
+        else if (update.getMessage().getText().equals("6")) {
+            stepResponse.setId(60);
+            stepResponse.setName("""
+                           Type the keyword you'd like to find in vacancy (none for no keyword)
+                           """);
+        }
+
         else {
             stepResponse.setId(ERROR_RESPONSE);
         }

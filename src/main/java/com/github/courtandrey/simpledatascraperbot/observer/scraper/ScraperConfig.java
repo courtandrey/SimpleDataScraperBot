@@ -3,6 +3,7 @@ package com.github.courtandrey.simpledatascraperbot.observer.scraper;
 import com.github.courtandrey.simpledatascraperbot.bot.render.HasIdAndName;
 import com.github.courtandrey.simpledatascraperbot.entity.data.Data;
 import com.github.courtandrey.simpledatascraperbot.entity.request.nlhousing.NLHousingSite;
+import com.github.courtandrey.simpledatascraperbot.entity.request.nljob.NLJobSite;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.Scraper;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.lv.LatvijasPastsScraper;
 import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.movie.ImdbScraper;
@@ -46,6 +47,8 @@ public class ScraperConfig {
         scrapers.add(new ImdbScraper());
         Arrays.stream(NLHousingSite.values()).sorted(Comparator.comparing(HasIdAndName::getId))
                 .forEach(nlHousingSite -> scrapers.add(nlHousingSite.getScraper()));
+        Arrays.stream(NLJobSite.values()).sorted(Comparator.comparing(HasIdAndName::getId))
+                .forEach(nlJobSite -> scrapers.add(nlJobSite.getScraper()));
         return scrapers;
     }
 

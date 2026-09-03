@@ -36,6 +36,8 @@ public class StepMappingFunction implements BiFunction<Integer, StateRegistry.Di
             case 51 -> new Step51Add();
             case 52 -> new Step52Add();
             case 53 -> new Step53Add();
+            case 60 -> new Step60Add();
+            case 61 -> new Step61Add();
             default -> throw new UnsupportedOperationException("Unknown step of dialog");
         };
     }

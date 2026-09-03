@@ -19,6 +19,7 @@ public class AddRequestCommand extends BaseCommand{
                             3. NLHousing
                             4. Latvijas Pasts
                             5. IMDB movie
+                            6. NL Jobs
                             """,
                 message.getChatId()
         );

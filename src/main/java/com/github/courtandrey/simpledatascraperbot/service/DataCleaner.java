@@ -20,6 +20,7 @@ public class DataCleaner {
     private final RentalOfferingService rentalOfferingService;
     private final LatvijasPastsService latvijasPastsService;
     private final MovieService movieService;
+    private final JobOfferingService jobOfferingService;
 
     public Collection<Pair<Request, Processee<Data>>> getUnique(Collection<Pair<Request, Processee<Data>>> newData) {
         Set<Pair<Request, Processee<Data>>> uniqueData = new HashSet<>();
@@ -36,6 +37,10 @@ public class DataCleaner {
                 (requestId, statuses) -> latvijasPastsService.getStatuses(statuses.stream().map(LatvijasPastsStatus::getReferenceNumber).distinct().toList(), requestId)));
         uniqueData.addAll(getUnique(Movie.class, dataByClass,
                 (requestId, movies) -> movieService.getMovies(movies.stream().map(Movie::getUrl).distinct().toList(), requestId)));
+
+        uniqueData.addAll(getUnique(JobOffering.class, dataByClass,
+                (requestId, offerings) -> jobOfferingService.getOfferingsWithUrlsContainingIn(offerings.stream()
+                        .map(JobOffering::getUrl).toList(), requestId)));
 
         return uniqueData;
     }
