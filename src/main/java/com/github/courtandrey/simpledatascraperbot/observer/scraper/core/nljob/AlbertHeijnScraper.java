@@ -19,18 +19,21 @@ import static java.util.Optional.ofNullable;
 public class AlbertHeijnScraper implements Scraper<JobOffering> {
     private static final Map<String, String> HEADERS = Map.of(
             "User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0",
-            "X-Requested-With", "XMLHttpRequest");
+            "X-Requested-With", "XMLHttpRequest",
+            "Accept", "application/json, text/javascript, */*; q=0.01",
+            "Accept-Language", "nl-NL,nl;q=0.9,en;q=0.8",
+            "Referer", "https://werk.ah.nl/vacatures");
 
     private final AlbertHeijnParser parser = new AlbertHeijnParser();
 
     @Override
     public List<Pair<Request, Processee<JobOffering>>> scrap(List<Request> reqs) {
         return new PageScrapingFunction<>(
-                req -> new GETConnector(createUrl(req), HEADERS,
-                        (context, url) -> url.replace("$PAGE_NUM", String.valueOf(context.getCurrentPage()))),
+                req -> new GETConnector(createUrl(req), HEADERS),
                 parser::parsePage,
                 NLJobRequest.class
         )
+                .singlePage(true)
                 .apply(reqs);
     }
 
@@ -40,7 +43,7 @@ public class AlbertHeijnScraper implements Scraper<JobOffering> {
     }
 
     private String createUrl(NLJobRequest request) {
-        String template = "https://werk.ah.nl/api/vacancy/?search=$KEYWORD&sort=created&sortDir=DESC&pageNumber=$PAGE_NUM";
+        String template = "https://werk.ah.nl/en/api/vacancy/?search=$KEYWORD&sort=created&sortDir=DESC";
         return template.replace("$KEYWORD", ofNullable(request.getKeyword()).map(keyword -> keyword.replace(" ", "+")).orElse(""));
     }
 }
