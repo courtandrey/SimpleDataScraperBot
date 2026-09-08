@@ -33,8 +33,7 @@ public class DatabricksScraper implements Scraper<JobOffering> {
                 NLJobRequest.class
         )
                 .withFilteringCondition((req, offering) -> offering.getCity().toLowerCase().contains(LOCATION.toLowerCase()))
-                .withFilteringCondition((req, offering) -> ofNullable(req.getKeyword())
-                        .map(keyword -> offering.getName().toLowerCase().contains(keyword.toLowerCase())).orElse(true))
+                .withFilteringCondition(new JobOfferingRequestSatisfied())
                 .singlePage(true)
                 .apply(reqs);
     }

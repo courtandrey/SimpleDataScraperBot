@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 public enum NLJobSite implements HasIdAndName {
     JUST_EAT_TAKEAWAY("Just Eat Takeaway", new JustEatTakeawayScraper()),
     ALBERT_HEIJN("Albert Heijn", new AlbertHeijnScraper()),
-    DATABRICKS("Databricks", new DatabricksScraper());
+    DATABRICKS("Databricks", new DatabricksScraper()),
+    GO_DUTCH("GoDutch", new GoDutchScraper());
 
     private final String displayName;
     private final Scraper<JobOffering> scraper;
