@@ -19,6 +19,7 @@ public class JobOffering extends Data {
     @Column(nullable = false, unique = true, length = 1024)
     private String url;
     private String city;
+    private String updatedAt;
 
     @Override
     public boolean equals(Object o) {
@@ -38,6 +39,7 @@ public class JobOffering extends Data {
                 "name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", city='" + city + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }
