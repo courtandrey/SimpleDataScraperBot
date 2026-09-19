@@ -10,6 +10,12 @@ import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.parser.
 
 import java.util.List;
 
+/**
+ * @deprecated not used anymore: the bot no longer offers career.habr.com as a source and this scraper is not
+ * registered in {@code ScraperConfig.getScrapers()}. It has not been verified to still work against the
+ * current career.habr.com markup.
+ */
+@Deprecated
 public class HabrCareerScraper extends VacancyScraper {
 
     public HabrCareerScraper(ParsingMode parsingMode) {

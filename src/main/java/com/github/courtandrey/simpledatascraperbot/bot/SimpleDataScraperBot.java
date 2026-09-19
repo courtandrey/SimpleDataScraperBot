@@ -201,17 +201,13 @@ public class SimpleDataScraperBot extends TelegramLongPollingCommandBot {
             RequestTransformation<? extends Request> transformation;
 
             switch (requestInt) {
-                case 1 -> transformation = new HHVacancyRequestFunction();
+                case 1 -> transformation = new NLHousingRequestFunction();
 
-                case 2 -> transformation = new HabrCareerRequestFunction();
+                case 2 -> transformation = new LatvijasPastsRequestFunction();
 
-                case 3 -> transformation = new NLHousingRequestFunction();
+                case 3 -> transformation = new ImdbRequestFunction();
 
-                case 4 -> transformation = new LatvijasPastsRequestFunction();
-
-                case 5 -> transformation = new ImdbRequestFunction();
-
-                case 6 -> transformation = new NLJobRequestFunction();
+                case 4 -> transformation = new NLJobRequestFunction();
 
                 default -> throw new UnsupportedOperationException("Unknown request type");
             }

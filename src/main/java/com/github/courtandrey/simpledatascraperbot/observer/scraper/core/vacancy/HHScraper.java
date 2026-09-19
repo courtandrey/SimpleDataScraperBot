@@ -12,6 +12,11 @@ import com.github.courtandrey.simpledatascraperbot.utility.RequestMapper;
 
 import java.util.List;
 
+/**
+ * @deprecated not used anymore: the bot no longer offers hh.ru as a source and this scraper is not registered
+ * in {@code ScraperConfig.getScrapers()}. It has not been verified to still work against the current hh.ru API.
+ */
+@Deprecated
 public class HHScraper extends VacancyScraper {
 
     public HHScraper(ParsingMode parsingMode) {

@@ -13,6 +13,12 @@ import com.github.courtandrey.simpledatascraperbot.observer.scraper.core.connect
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated not used anymore: the hand-rolled paging loop behind {@link HHScraper} and {@link HabrCareerScraper},
+ * both of which the bot no longer offers. New scrapers configure
+ * {@code com.github.courtandrey.simpledatascraperbot.observer.scraper.core.PageScrapingFunction} instead.
+ */
+@Deprecated
 public abstract class VacancyScraper implements Scraper<Vacancy> {
     protected GETConnector connector;
     protected VacancyParser parser;

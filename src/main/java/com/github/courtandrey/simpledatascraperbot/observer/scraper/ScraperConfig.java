@@ -25,6 +25,11 @@ public class ScraperConfig {
     @Value("${app.vacancy.parsing-mode}")
     private String parsingMode;
 
+    /**
+     * @deprecated no longer offered by the bot and left unregistered: career.habr.com scraping has not been
+     * verified to still work. Kept so the source can be brought back once it is checked again.
+     */
+    @Deprecated
     public HabrCareerScraper habrCareerScraper() {
         if (parsingMode.equals("extra")) {
             return new HabrCareerScraper(EXTRA);
@@ -32,6 +37,11 @@ public class ScraperConfig {
         return new HabrCareerScraper(MAIN);
     }
 
+    /**
+     * @deprecated no longer offered by the bot and left unregistered: hh.ru scraping has not been verified
+     * to still work. Kept so the source can be brought back once it is checked again.
+     */
+    @Deprecated
     public HHScraper hhScraper() {
         if (parsingMode.equals("extra")) {
             return new HHScraper(EXTRA);
@@ -41,8 +51,6 @@ public class ScraperConfig {
 
     public List<Scraper<? extends Data>> getScrapers() {
         List<Scraper<? extends Data>> scrapers = new ArrayList<>();
-        scrapers.add(hhScraper());
-        scrapers.add(habrCareerScraper());
         scrapers.add(new LatvijasPastsScraper());
         scrapers.add(new ImdbScraper());
         Arrays.stream(NLHousingSite.values()).sorted(Comparator.comparing(HasIdAndName::getId))

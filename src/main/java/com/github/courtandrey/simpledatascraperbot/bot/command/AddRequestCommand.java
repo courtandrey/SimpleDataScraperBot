@@ -14,12 +14,10 @@ public class AddRequestCommand extends BaseCommand{
                 absSender,
                 """
                             Choose one of avalable scrapers:
-                            1. HeadHunter
-                            2. HabrCareer
-                            3. NLHousing
-                            4. Latvijas Pasts
-                            5. IMDB movie
-                            6. NL Jobs
+                            1. NLHousing
+                            2. Latvijas Pasts
+                            3. IMDB movie
+                            4. NL Jobs
                             """,
                 message.getChatId()
         );
