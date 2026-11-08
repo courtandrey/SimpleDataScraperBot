@@ -13,7 +13,8 @@ public enum NLJobSite implements HasIdAndName {
     JUST_EAT_TAKEAWAY("Just Eat Takeaway", new JustEatTakeawayScraper()),
     ALBERT_HEIJN("Albert Heijn", new AlbertHeijnScraper()),
     DATABRICKS("Databricks", new DatabricksScraper()),
-    GO_DUTCH("GoDutch", new GoDutchScraper());
+    GO_DUTCH("GoDutch", new GoDutchScraper()),
+    BOOKING("Booking.com", new BookingScraper());
 
     private final String displayName;
     private final Scraper<JobOffering> scraper;

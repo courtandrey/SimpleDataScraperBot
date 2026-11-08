@@ -46,7 +46,7 @@ and `us` do not.
 
 ## Scrapers
 
-43 scrapers are registered. Each one is a connector (fetch) + a parser (turn a page into entities) + a
+44 scrapers are registered. Each one is a connector (fetch) + a parser (turn a page into entities) + a
 `PageScrapingFunction` configuration (paging), and declares which requests it accepts via `rightScraperToRequest`.
 
 ### NL housing — `observer/scraper/core/nlhousing`
@@ -90,6 +90,7 @@ Same id rule (`NLJobSite.ordinal() + 1`), same append-only constraint.
 | 2 | Albert Heijn | `AlbertHeijnScraper` |
 | 3 | Databricks | `DatabricksScraper` |
 | 4 | GoDutch | `GoDutchScraper` |
+| 5 | Booking.com | `BookingScraper` |
 
 ### Standalone
 
@@ -123,7 +124,7 @@ CycledProcess (raw Thread) → SendNewDataStrategy → DataManager → ScraperFa
 
 ### PageScrapingFunction
 
-`observer/scraper/core/PageScrapingFunction` is the shared paging engine used by 42 of the 43 registered scrapers —
+`observer/scraper/core/PageScrapingFunction` is the shared paging engine used by 43 of the 44 registered scrapers —
 `LatvijasPastsScraper` is the exception, since one reference number is a single fetch. It is a
 fluent config object — `singlePage`, `sameOutput`, `withFallbackConnector`, `withFilteringCondition`,
 `withStopPaginationPredicate`, `withDataCallback`, `withReqDataPostProcessing`, `withSendingOutCondition` — that keeps
@@ -138,7 +139,7 @@ rewriting of the paging URL or request body:
 
 | Connector | Used by | Notes |
 | --- | --- | --- |
-| `GETConnector` | most housing sites, 3 of 4 job sites, Latvijas Pasts | plain `HttpURLConnection` |
+| `GETConnector` | most housing sites, 4 of 5 job sites, Latvijas Pasts | plain `HttpURLConnection` |
 | `POSTConnector` | Kamernet, Interhouse, Vanderlinden, Vbtverhuurmakelaars, Viadaan, Just Eat Takeaway, IMDB | JSON/GraphQL APIs; the body, not the URL, carries paging |
 | `GETClientConnector` | Rooms and Houses, Ikwilhuren | Apache `HttpClient`, for sites that need cookies or redirect handling |
 | `JsoupConnector` | Funda | fetches through Jsoup with custom headers |
